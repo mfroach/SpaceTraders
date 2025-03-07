@@ -1,25 +1,20 @@
 ﻿using System;
 
-class Program
-{
-    static async Task Main(string[] args)
-    {
+class Program {
+    static async Task Main(string[] args) {
         var httpClientService = new HttpClientService();
 
-        while (true)
-        {
+        while (true) {
             Console.WriteLine("Enter a command (e.g., 'get-agent') or 'exit' to quit:");
             var command = Console.ReadLine();
 
-            if (command == "exit")
-            {
+            if (command == "exit") {
                 break;
             }
 
             Func<Task<string>> getJsonAsync = null;
 
-            switch (command)
-            {
+            switch (command) {
                 case "get-agent":
                     getJsonAsync = httpClientService.GetAgentAsync;
                     break;
@@ -31,8 +26,7 @@ class Program
                     continue;
             }
 
-            if (getJsonAsync != null)
-            {
+            if (getJsonAsync != null) {
                 var json = await getJsonAsync();
                 Console.WriteLine(json);
             }
