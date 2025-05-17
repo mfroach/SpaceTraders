@@ -2,25 +2,72 @@
 
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization; // Required for JsonPropertyName
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public class Deserializer {
-    // Define the Agent record based on the expected fields from the API
-    // Ensure this record is public if HttpClientService or Program.cs needs to access its type directly.
     public record Agent(
-        [property: JsonPropertyName("accountId")] string AccountId,
+        [property: JsonPropertyName("accountId")]
+        string AccountId,
         [property: JsonPropertyName("symbol")] string Symbol,
-        [property: JsonPropertyName("headquarters")] string Headquarters,
-        [property: JsonPropertyName("credits")] long Credits,
-        [property: JsonPropertyName("startingFaction")] string StartingFaction,
-        [property: JsonPropertyName("shipCount")] int ShipCount
+        [property: JsonPropertyName("headquarters")]
+        string Headquarters,
+        [property: JsonPropertyName("credits")]
+        long Credits,
+        [property: JsonPropertyName("startingFaction")]
+        string StartingFaction,
+        [property: JsonPropertyName("shipCount")]
+        int ShipCount
     );
 
-    // Helper record to match the API's typical {"data": ...} structure
+    public record WaypointData(
+        [property: JsonPropertyName("symbol")] string Symbol,
+        [property: JsonPropertyName("type")] string Type,
+        [property: JsonPropertyName("systemSymbol")]
+        string SystemSymbol,
+        [property: JsonPropertyName("x")] int X,
+        [property: JsonPropertyName("y")] int Y,
+        [property: JsonPropertyName("orbitals")]
+        Orbital[] Orbitals,
+        [property: JsonPropertyName("traits")] 
+        Trait[] Traits,
+        [property: JsonPropertyName("isUnderConstruction")]
+        bool IsUnderConstruction,
+        [property: JsonPropertyName("faction")]
+        Faction Faction,
+        [property: JsonPropertyName("modifiers")]
+        object[] Modifiers,
+        [property: JsonPropertyName("chart")] Chart Chart
+    );
+
+    public record Orbital(
+        [property: JsonPropertyName("symbol")] string Symbol
+    );
+
+    public record Trait(
+        [property: JsonPropertyName("symbol")] string Symbol,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("description")]
+        string Description
+    );
+
+    public record Faction(
+        [property: JsonPropertyName("symbol")] string Symbol
+    );
+
+    public record Chart(
+        [property: JsonPropertyName("waypointSymbol")]
+        string WaypointSymbol,
+        [property: JsonPropertyName("submittedBy")]
+        string SubmittedBy,
+        [property: JsonPropertyName("submittedOn")]
+        DateTime SubmittedOn
+    );
+
+    private record ResponseWrapper([property: JsonPropertyName("data")] WaypointData Data);
+
     private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
 
-    // Updated method to deserialize the JSON stream into an Agent object
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true // Helpful if casing isn't exact, though JsonPropertyName is preferred
@@ -30,7 +77,6 @@ public class Deserializer {
             return agentResponse?.Data; // Return the nested Agent object
         }
         catch (JsonException ex) {
-            // Log the exception or handle it as appropriate for your application
             Console.WriteLine($"Error deserializing agent data: {ex.Message}");
             return null;
         }
