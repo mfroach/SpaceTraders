@@ -81,20 +81,35 @@ class Program {
 
                     break;
                 case "contracts":
-                    // todo implement contracts commands
-                    var contractsArray = await httpClientService.GetContractsAsync();
+                    // todo implement contract accept
+                    // todo on enter 'contracts', only goto root shell when 'exit', probably don't use goto
+                    Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
+                    var subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    
+                    if (subcommand == "list") {
+                        var contractsArray = await httpClientService.GetContractsAsync();
 
-                    if (contractsArray != null && contractsArray.Length > 0) {
-                        foreach (var contract in contractsArray) {
-                            Console.WriteLine($"Contract ID: {contract.ContractID}");
-                            Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
-                                              $"    Type: {contract.ContractType}\n" +
-                                              $"    Deadline: {contract.Terms.Deadline}\n" +
-                                              $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
+                        if (contractsArray != null && contractsArray.Length > 0) {
+                            foreach (var contract in contractsArray) {
+                                Console.WriteLine($"Contract ID: {contract.ContractID}");
+                                Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
+                                                  $"    Type: {contract.ContractType}\n" +
+                                                  $"    Deadline: {contract.Terms.Deadline}\n" +
+                                                  $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
 
+                            }
+                        } else {
+                            Console.WriteLine("No contracts found or an error occurred.");
                         }
-                    } else {
-                        Console.WriteLine("No contracts found or an error occurred.");
+
+                    } else if (subcommand.Contains("contract")) {
+                        string contractID = subcommand.Substring(9);
+                        Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
+                        Console.WriteLine($"Contract ID: {contract.ContractID}");
+                        Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
+                                          $"    Type: {contract.ContractType}\n" +
+                                          $"    Deadline: {contract.Terms.Deadline}\n" +
+                                          $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
                     }
 
                     break;

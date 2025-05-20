@@ -65,7 +65,20 @@ public class Deserializer {
         DateTime SubmittedOn
     );
 
-    public record Contracts(
+    public record Contracts( // rename ContractsList?
+        [property: JsonPropertyName("id")]
+        string ContractID,
+        [property: JsonPropertyName("factionSymbol")]
+        string FactionSymbol,
+        [property: JsonPropertyName("type")]
+        string ContractType,
+        [property: JsonPropertyName("terms")]
+        Terms Terms,
+        [property: JsonPropertyName("accepted")]
+        bool Accepted
+    );
+
+    public record Contract( // todo define the rest of the properties
         [property: JsonPropertyName("id")]
         string ContractID,
         [property: JsonPropertyName("factionSymbol")]
@@ -100,6 +113,8 @@ public class Deserializer {
     private record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
     private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
     private record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
+    private record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
+
     
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
@@ -139,6 +154,20 @@ public class Deserializer {
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing contracts data: {ex.Message}");
+            return null;
+        }
+    }
+    
+    public async Task<Contract?> DeserializeContract(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var response = await JsonSerializer.DeserializeAsync<ContractResponseWrapper>(jsonStream, options);
+            return response?.Data;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing contract data: {ex.Message}");
             return null;
         }
     }
