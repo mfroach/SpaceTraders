@@ -9,7 +9,7 @@ class Program {
         var httpClientService = new HttpClientService(args[0]);
 
         while (true) {
-            Console.WriteLine("Enter a command (e.g., 'agent', 'loc') or 'exit' to quit:");
+            Console.WriteLine("Enter a command (e.g., 'agent', 'loc', 'contracts') or 'exit' to quit:");
             var command = Console.ReadLine()?.Trim().ToLowerInvariant();
 
             if (command == "exit") {
@@ -77,6 +77,23 @@ class Program {
                         }
                     } else {
                         Console.WriteLine("Failed to retrieve or deserialize location data.");
+                    }
+
+                    break;
+                case "contracts":
+                    var contractsArray = await httpClientService.GetContractsAsync();
+
+                    if (contractsArray != null && contractsArray.Length > 0) {
+                        foreach (var contract in contractsArray) {
+                            Console.WriteLine($"Contract ID: {contract.ContractID}");
+                            Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
+                                              $"    Type: {contract.ContractType}\n" +
+                                              $"    Deadline: {contract.Terms.Deadline}\n" +
+                                              $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
+
+                        }
+                    } else {
+                        Console.WriteLine("No contracts found or an error occurred.");
                     }
 
                     break;

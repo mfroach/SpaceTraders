@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public class Deserializer {
+    // Can we define these records in another file for readability?
     public record Agent(
         [property: JsonPropertyName("accountId")]
         string AccountId,
@@ -64,21 +65,52 @@ public class Deserializer {
         DateTime SubmittedOn
     );
 
-    // Can we aggregate the response wrapper into one record? Will need one per query doing like this.
+    public record Contracts(
+        [property: JsonPropertyName("id")]
+        string ContractID,
+        [property: JsonPropertyName("factionSymbol")]
+        string FactionSymbol,
+        [property: JsonPropertyName("type")]
+        string ContractType,
+        [property: JsonPropertyName("terms")]
+        Terms Terms,
+        [property: JsonPropertyName("accepted")]
+        bool Accepted
+    );
+    
+    public record Terms(
+        [property: JsonPropertyName("deadline")] DateTime Deadline,
+        [property: JsonPropertyName("payment")] Payment Payment,
+        [property: JsonPropertyName("deliver")] Deliver[] DeliverItems
+    );
+
+    public record Payment(
+        [property: JsonPropertyName("onAccepted")] int OnAccepted,
+        [property: JsonPropertyName("onFulfilled")] int OnFulfilled
+    );
+
+    public record Deliver(
+        [property: JsonPropertyName("tradeSymbol")] string TradeSymbol,
+        [property: JsonPropertyName("destinationSymbol")] string DestinationSymbol,
+        [property: JsonPropertyName("unitsRequired")] int UnitsRequired,
+        [property: JsonPropertyName("unitsFulfilled")] int UnitsFulfilled
+    );
+
+    // Can we aggregate the response wrapper into one record?
     private record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
-
     private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
-
+    private record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
+    
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true
         };
         try {
-            var agentResponse = await JsonSerializer.DeserializeAsync<AgentResponseWrapper>(jsonStream, options);
-            return agentResponse?.Data;
+            var response = await JsonSerializer.DeserializeAsync<AgentResponseWrapper>(jsonStream, options);
+            return response?.Data;
         }
         catch (JsonException ex) {
-            Console.WriteLine($"Error deserializing data: {ex.Message}");
+            Console.WriteLine($"Error deserializing agent data: {ex.Message}");
             return null;
         }
     }
@@ -88,11 +120,25 @@ public class Deserializer {
             PropertyNameCaseInsensitive = true
         };
         try {
-            var waypointResponse = await JsonSerializer.DeserializeAsync<WaypointResponseWrapper>(jsonStream, options);
-            return waypointResponse?.Data;
+            var response = await JsonSerializer.DeserializeAsync<WaypointResponseWrapper>(jsonStream, options);
+            return response?.Data;
         }
         catch (JsonException ex) {
-            Console.WriteLine($"Error deserializing data: {ex.Message}");
+            Console.WriteLine($"Error deserializing waypoint data: {ex.Message}");
+            return null;
+        }
+    }
+    
+    public async Task<Contracts[]?> DeserializeContracts(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var response = await JsonSerializer.DeserializeAsync<ContractListResponseWrapper>(jsonStream, options);
+            return response?.Data;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing contracts data: {ex.Message}");
             return null;
         }
     }

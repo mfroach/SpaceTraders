@@ -28,18 +28,32 @@ public class HttpClientService {
         }
     }
 
-    public async Task<Deserializer.Waypoint> GetLocationAsync() {
+    public async Task<Deserializer.Waypoint?> GetLocationAsync() {
         var deserializer = new Deserializer();
         try {
-            Deserializer.Agent? agent = await GetAgentAsync();
-            // how do we get token here?
+            // Rate limit consideration? Should we be making two or more requests per command?
+            Deserializer.Agent? agent = await GetAgentAsync(); // Create agent and pull waypoint+system out of response
             string agentWaypoint = agent.Headquarters;
             string agentSystem = agentWaypoint.Substring(0, 7);
-            await using var jsonStream = await _client.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{agentSystem}/waypoints/{agentWaypoint}");
+            await using var jsonStream =
+                await _client.GetStreamAsync(
+                    $"https://api.spacetraders.io/v2/systems/{agentSystem}/waypoints/{agentWaypoint}");
             return await deserializer.DeserializeWaypoint(jsonStream);
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP request to fetch location data failed: {ex.Message}");
+            return null;
+        }
+    }
+    public async Task<Deserializer.Contracts[]?> GetContractsAsync() {
+        var deserializer = new Deserializer();
+        try {
+            await using var jsonStream =
+                await _client.GetStreamAsync("https://api.spacetraders.io/v2/my/contracts");
+            return await deserializer.DeserializeContracts(jsonStream);
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to fetch contract data failed: {ex.Message}");
             return null;
         }
     }
