@@ -20,7 +20,7 @@ public class Deserializer {
         int ShipCount
     );
 
-    public record WaypointData(
+    public record Waypoint(
         [property: JsonPropertyName("symbol")] string Symbol,
         [property: JsonPropertyName("type")] string Type,
         [property: JsonPropertyName("systemSymbol")]
@@ -64,20 +64,35 @@ public class Deserializer {
         DateTime SubmittedOn
     );
 
-    private record ResponseWrapper([property: JsonPropertyName("data")] WaypointData Data);
+    // Can we aggregate the response wrapper into one record? Will need one per query doing like this.
+    private record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
 
     private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
 
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true // Helpful if casing isn't exact, though JsonPropertyName is preferred
+            PropertyNameCaseInsensitive = true
         };
         try {
             var agentResponse = await JsonSerializer.DeserializeAsync<AgentResponseWrapper>(jsonStream, options);
-            return agentResponse?.Data; // Return the nested Agent object
+            return agentResponse?.Data;
         }
         catch (JsonException ex) {
-            Console.WriteLine($"Error deserializing agent data: {ex.Message}");
+            Console.WriteLine($"Error deserializing data: {ex.Message}");
+            return null;
+        }
+    }
+    
+    public async Task<Waypoint?> DeserializeWaypoint(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var waypointResponse = await JsonSerializer.DeserializeAsync<WaypointResponseWrapper>(jsonStream, options);
+            return waypointResponse?.Data;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing data: {ex.Message}");
             return null;
         }
     }
