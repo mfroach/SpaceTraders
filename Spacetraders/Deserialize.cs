@@ -30,8 +30,7 @@ public class Deserializer {
         [property: JsonPropertyName("y")] int Y,
         [property: JsonPropertyName("orbitals")]
         Orbital[] Orbitals,
-        [property: JsonPropertyName("traits")] 
-        Trait[] Traits,
+        [property: JsonPropertyName("traits")] Trait[] Traits,
         [property: JsonPropertyName("isUnderConstruction")]
         bool IsUnderConstruction,
         [property: JsonPropertyName("faction")]
@@ -66,55 +65,68 @@ public class Deserializer {
     );
 
     public record Contracts( // rename ContractsList?
-        [property: JsonPropertyName("id")]
-        string ContractID,
+        [property: JsonPropertyName("id")] string ContractID,
         [property: JsonPropertyName("factionSymbol")]
         string FactionSymbol,
-        [property: JsonPropertyName("type")]
-        string ContractType,
-        [property: JsonPropertyName("terms")]
-        Terms Terms,
+        [property: JsonPropertyName("type")] string ContractType,
+        [property: JsonPropertyName("terms")] Terms Terms,
         [property: JsonPropertyName("accepted")]
         bool Accepted
     );
 
     public record Contract( // todo define the rest of the properties
-        [property: JsonPropertyName("id")]
-        string ContractID,
+        [property: JsonPropertyName("id")] string ContractID,
         [property: JsonPropertyName("factionSymbol")]
         string FactionSymbol,
-        [property: JsonPropertyName("type")]
-        string ContractType,
-        [property: JsonPropertyName("terms")]
-        Terms Terms,
+        [property: JsonPropertyName("type")] string ContractType,
+        [property: JsonPropertyName("terms")] Terms Terms,
         [property: JsonPropertyName("accepted")]
         bool Accepted
     );
-    
+
+    public record PostContract(
+        [property: JsonPropertyName("id")] string ContractID,
+        [property: JsonPropertyName("factionSymbol")]
+        string FactionSymbol,
+        [property: JsonPropertyName("type")] string ContractType,
+        [property: JsonPropertyName("terms")] Terms Terms
+    );
+
     public record Terms(
-        [property: JsonPropertyName("deadline")] DateTime Deadline,
-        [property: JsonPropertyName("payment")] Payment Payment,
-        [property: JsonPropertyName("deliver")] Deliver[] DeliverItems
+        [property: JsonPropertyName("deadline")]
+        DateTime Deadline,
+        [property: JsonPropertyName("payment")]
+        Payment Payment,
+        [property: JsonPropertyName("deliver")]
+        Deliver[] DeliverItems
     );
 
     public record Payment(
-        [property: JsonPropertyName("onAccepted")] int OnAccepted,
-        [property: JsonPropertyName("onFulfilled")] int OnFulfilled
+        [property: JsonPropertyName("onAccepted")]
+        int OnAccepted,
+        [property: JsonPropertyName("onFulfilled")]
+        int OnFulfilled
     );
 
     public record Deliver(
-        [property: JsonPropertyName("tradeSymbol")] string TradeSymbol,
-        [property: JsonPropertyName("destinationSymbol")] string DestinationSymbol,
-        [property: JsonPropertyName("unitsRequired")] int UnitsRequired,
-        [property: JsonPropertyName("unitsFulfilled")] int UnitsFulfilled
+        [property: JsonPropertyName("tradeSymbol")]
+        string TradeSymbol,
+        [property: JsonPropertyName("destinationSymbol")]
+        string DestinationSymbol,
+        [property: JsonPropertyName("unitsRequired")]
+        int UnitsRequired,
+        [property: JsonPropertyName("unitsFulfilled")]
+        int UnitsFulfilled
     );
 
     // Can we aggregate the response wrapper into one record?
     private record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
-    private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
-    private record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
-    private record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
 
+    private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
+
+    private record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
+
+    private record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
     
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
@@ -129,7 +141,7 @@ public class Deserializer {
             return null;
         }
     }
-    
+
     public async Task<Waypoint?> DeserializeWaypoint(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true
@@ -143,8 +155,8 @@ public class Deserializer {
             return null;
         }
     }
-    
-    public async Task<Contracts[]?> DeserializeContracts(Stream jsonStream) {
+
+    public async Task<Contracts[]?> DeserializeContractList(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true
         };
@@ -157,7 +169,7 @@ public class Deserializer {
             return null;
         }
     }
-    
+
     public async Task<Contract?> DeserializeContract(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true

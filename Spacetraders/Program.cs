@@ -81,13 +81,12 @@ class Program {
 
                     break;
                 case "contracts":
-                    // todo implement contract accept
                     // todo on enter 'contracts', only goto root shell when 'exit', probably don't use goto
                     Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
                     var subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
                     
                     if (subcommand == "list") {
-                        var contractsArray = await httpClientService.GetContractsAsync();
+                        var contractsArray = await httpClientService.GetContractListAsync();
 
                         if (contractsArray != null && contractsArray.Length > 0) {
                             foreach (var contract in contractsArray) {
@@ -95,7 +94,8 @@ class Program {
                                 Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
                                                   $"    Type: {contract.ContractType}\n" +
                                                   $"    Deadline: {contract.Terms.Deadline}\n" +
-                                                  $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
+                                                  $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" + 
+                                                  $"    Accepted: {contract.Accepted}");
 
                             }
                         } else {
@@ -110,9 +110,24 @@ class Program {
                                           $"    Type: {contract.ContractType}\n" +
                                           $"    Deadline: {contract.Terms.Deadline}\n" +
                                           $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
+                    } else if (subcommand.Contains("accept")) {
+                        string contractID = subcommand.Substring(7);
+                        using HttpResponseMessage response = await httpClientService.AcceptContract(contractID);
+                        response.EnsureSuccessStatusCode(); // How do I == this return todo Need to branch from here
+                        Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
+                        Console.WriteLine("-- Contract Accepted --");
+                        Console.WriteLine($"Contract ID: {contract.ContractID}");
+                        Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
+                                          $"    Type: {contract.ContractType}\n" +
+                                          $"    Deadline: {contract.Terms.Deadline}\n" +
+                                          $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
+                                          $"    Accepted: {contract.Accepted}");
                     }
-
                     break;
+                case "ships":
+                    Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
+                    //string subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    throw new NotImplementedException();
                 default:
                     Console.WriteLine("Unknown command.");
                     break;
