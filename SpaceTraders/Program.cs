@@ -1,7 +1,7 @@
-﻿namespace Spacetraders;
+﻿namespace SpaceTraders;
 
 using System;
-
+using SpaceTraders.Models;
 class Program {
     static async Task Main(string[] args) {
         // todo need to catch index out of range when no arg passed
@@ -18,7 +18,7 @@ class Program {
 
             switch (command) {
                 case "agent":
-                    Deserializer.Agent? agent = await httpClientService.GetAgentAsync();
+                    Agent? agent = await httpClientService.GetAgentAsync();
                     if (agent != null) {
                         Console.WriteLine("Agent Details:");
                         Console.WriteLine($"  Symbol: {agent.Symbol}");
@@ -80,11 +80,11 @@ class Program {
                     }
 
                     break;
-                case "contracts":
+                case "contracts": {
                     // todo on enter 'contracts', only goto root shell when 'exit', probably don't use goto
                     Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
-                    var subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-                    
+                    string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+
                     if (subcommand == "list") {
                         var contractsArray = await httpClientService.GetContractListAsync();
 
@@ -94,7 +94,8 @@ class Program {
                                 Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
                                                   $"    Type: {contract.ContractType}\n" +
                                                   $"    Deadline: {contract.Terms.Deadline}\n" +
-                                                  $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" + 
+                                                  $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
+                                                  $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
                                                   $"    Accepted: {contract.Accepted}");
 
                             }
@@ -109,25 +110,35 @@ class Program {
                         Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
                                           $"    Type: {contract.ContractType}\n" +
                                           $"    Deadline: {contract.Terms.Deadline}\n" +
-                                          $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}");
+                                          $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
+                                          $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
+                                          $"    Accepted: {contract.Accepted}");
                     } else if (subcommand.Contains("accept")) {
                         string contractID = subcommand.Substring(7);
                         using HttpResponseMessage response = await httpClientService.AcceptContract(contractID);
                         response.EnsureSuccessStatusCode(); // How do I == this return todo Need to branch from here
                         Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
                         Console.WriteLine("-- Contract Accepted --");
+                        Console.WriteLine($"Payment received: {contract.Terms.Payment.OnAccepted} ");
                         Console.WriteLine($"Contract ID: {contract.ContractID}");
                         Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
                                           $"    Type: {contract.ContractType}\n" +
                                           $"    Deadline: {contract.Terms.Deadline}\n" +
-                                          $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
-                                          $"    Accepted: {contract.Accepted}");
+                                          $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}");
+                    } else {
+                        Console.WriteLine("Command unrecognized or error occurred.");
                     }
+
                     break;
-                case "ships":
+                }
+                case "ships": {
                     Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
-                    //string subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    if (subcommand == "list") { 
+                        //Deserializer.ShipList? shipList = await httpClientService.GetShipListAsync();
+                    }
                     throw new NotImplementedException();
+                }
                 default:
                     Console.WriteLine("Unknown command.");
                     break;

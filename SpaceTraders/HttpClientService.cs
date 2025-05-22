@@ -1,8 +1,7 @@
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Spacetraders;
+using SpaceTraders.Models;
+
+namespace SpaceTraders;
 
 public class HttpClientService {
     private readonly HttpClient _client;
@@ -14,7 +13,7 @@ public class HttpClientService {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    public async Task<Deserializer.Agent?> GetAgentAsync() {
+    public async Task<Agent?> GetAgentAsync() {
         var deserializer = new Deserializer();
         try {
             using var jsonStream = await _client.GetStreamAsync("https://api.spacetraders.io/v2/my/agent");
@@ -33,7 +32,7 @@ public class HttpClientService {
         var deserializer = new Deserializer();
         try {
             // Rate limit consideration: 2 reqs per second max. Try not to nest too many requests
-            Deserializer.Agent? agent = await GetAgentAsync();
+            SpaceTraders.Models.Agent? agent = await GetAgentAsync();
             string agentWaypoint = agent.Headquarters;
             string agentSystem = agentWaypoint.Substring(0, 7); // pull system symbol out of waypoint
             await using var jsonStream =
