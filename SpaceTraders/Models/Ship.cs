@@ -2,10 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace SpaceTraders.Models;
 
-public record ShipListResponseWrapper(
+/*public record ShipListResponseWrapper(
     [property: JsonPropertyName("data")] Ship[] Data,
     [property: JsonPropertyName("meta")] Deserializer.Meta Meta
-);
+);*/
 
 public record Registration(
     [property: JsonPropertyName("name")] string Name,

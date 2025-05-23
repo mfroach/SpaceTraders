@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using SpaceTraders.Models;
 
 namespace SpaceTraders;
@@ -25,19 +26,29 @@ public class HttpClientService {
         }
     }
 
-    public async Task<Deserializer.Waypoint?> GetLocationAsync() {
+    public async Task<SystemDetails?> GetSystemAsync(string system) { // getsystem? getwaypoint?
         // Why the hell did I do this. We should be getting location of ships. Agent doesn't move
         // todo repurpose to get any location data
         // todo implement ship location command
         var deserializer = new Deserializer();
         try {
-            // Rate limit consideration: 2 reqs per second max. Try not to nest too many requests
-            SpaceTraders.Models.Agent? agent = await GetAgentAsync();
-            string agentWaypoint = agent.Headquarters;
-            string agentSystem = agentWaypoint.Substring(0, 7); // pull system symbol out of waypoint
             await using var jsonStream =
                 await _client.GetStreamAsync(
-                    $"https://api.spacetraders.io/v2/systems/{agentSystem}/waypoints/{agentWaypoint}");
+                    $"https://api.spacetraders.io/v2/systems/{system}");
+            return await deserializer.DeserializeSystem(jsonStream);
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to fetch location data failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<Deserializer.Waypoint?> GetWaypointAsync(string waypoint) {
+        var deserializer = new Deserializer();
+        string system = waypoint.Substring(0, 7); // pull system symbol out of waypoint
+        try {
+            await using var jsonStream =
+                await _client.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{system}/waypoints/{waypoint}");
             return await deserializer.DeserializeWaypoint(jsonStream);
         }
         catch (HttpRequestException ex) {

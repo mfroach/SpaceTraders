@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SpaceTraders.Models;
 
 public class Deserializer {
-
+// todo refactor orbital and faction out of deserialize
     public record Waypoint(
         [property: JsonPropertyName("symbol")] string Symbol,
         [property: JsonPropertyName("type")] string Type,
@@ -105,14 +105,14 @@ public class Deserializer {
         [property: JsonPropertyName("limit")] int Limit
     );
 
-    // Can we aggregate the response wrapper into one record?
+    // Can we aggregate the response wrapper somehow? Should they be defined here or in models?
     private record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
-
     private record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
-
     private record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
-
     private record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
+    private record SystemResponseWrapper([property: JsonPropertyName("data")] SystemDetails Data);
+    private record ShipListResponseWrapper([property: JsonPropertyName("data")] Ship[] Data, [property: JsonPropertyName("meta")] Meta Meta);
+
 
     public async Task<Agent?> DeserializeAgent(Stream jsonStream) {
         var options = new JsonSerializerOptions {
@@ -180,6 +180,20 @@ public class Deserializer {
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing ship list data: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<SystemDetails?> DeserializeSystem(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var response = await JsonSerializer.DeserializeAsync<SystemResponseWrapper>(jsonStream, options);
+            return response?.Data;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing system data: {ex.Message}");
             return null;
         }
     }

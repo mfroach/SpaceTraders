@@ -2,6 +2,7 @@
 
 using System;
 using SpaceTraders.Models;
+
 class Program {
     static async Task Main(string[] args) {
         // todo need to catch index out of range when no arg passed
@@ -15,7 +16,7 @@ class Program {
             if (command == "exit") {
                 break;
             }
-
+// TODO Prototype program flow here. Where do we really need subtrees for commands?
             switch (command) {
                 case "agent":
                     Agent? agent = await httpClientService.GetAgentAsync();
@@ -32,8 +33,10 @@ class Program {
                     }
 
                     break;
-                case "loc":
-                    Deserializer.Waypoint? location = await httpClientService.GetLocationAsync();
+                case "way": {
+                    Console.Write("Enter waypoint symbol: ");
+                    string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    Deserializer.Waypoint? location = await httpClientService.GetWaypointAsync(subcommand);
                     if (location != null) {
                         Console.WriteLine("Waypoint Details:");
                         Console.WriteLine($"  Symbol: {location.Symbol}");
@@ -80,12 +83,49 @@ class Program {
                     }
 
                     break;
+                }
+                case "system": {
+                    Console.Write("Enter system symbol: ");
+                    string? subcommand = Console.ReadLine()?.Trim().ToUpper();
+                    SystemDetails? system = await httpClientService.GetSystemAsync(subcommand);
+                    if (system != null) {
+                        Console.WriteLine("System Details:");
+                        Console.WriteLine($"  Name: {system.Name}");
+                        Console.WriteLine($"  Symbol: {system.Symbol}");
+                        Console.WriteLine($"  Sector: {system.SectorSymbol}");
+                        Console.WriteLine($"  Type: {system.Type}");
+                        Console.WriteLine($"  Coordinates: X={system.X}, Y={system.Y}");
+                        Console.WriteLine($"  Constellation: {system.Constellation}");
+                        if (system.Waypoints != null) {
+                            Console.WriteLine("List waypoints in system y/n?");
+                            if (Console.ReadLine() == "y") {
+                                foreach (var waypoint in system.Waypoints) {
+                                    Console.WriteLine($"  Symbol: {waypoint.Symbol}\n" +
+                                                      $"  Type: {waypoint.Type}\n" +
+                                                      $"  Coordinates: X={waypoint.X} Y={waypoint.Y}");
+                                    if (waypoint.Orbitals != null) {
+                                        Console.WriteLine("-- Orbitals --");
+                                        foreach (var orbital in waypoint.Orbitals) {
+                                            Console.WriteLine($"  Symbol: {orbital.Symbol}");
+                                        }
+                                        Console.WriteLine("   --------");
+                                    }
+                                }
+                            }
+                        } else {Console.WriteLine("No waypoints in system.");}
+                        break;
+                    } else {
+                        Console.WriteLine("No system found or error occurred.");
+                        break;
+                    }
+                }
+
                 case "contracts": {
                     // todo on enter 'contracts', only goto root shell when 'exit', probably don't use goto
                     Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
                     string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-                    if (subcommand == "list") {
+                    if (subcommand == "list") { // Should I just do switch case here?
                         var contractsArray = await httpClientService.GetContractListAsync();
 
                         if (contractsArray != null && contractsArray.Length > 0) {
@@ -97,12 +137,10 @@ class Program {
                                                   $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
                                                   $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
                                                   $"    Accepted: {contract.Accepted}");
-
                             }
                         } else {
                             Console.WriteLine("No contracts found or an error occurred.");
                         }
-
                     } else if (subcommand.Contains("contract")) {
                         string contractID = subcommand.Substring(9);
                         Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
@@ -134,7 +172,8 @@ class Program {
                 case "ships": {
                     Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
                     string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-                    if (subcommand == "list") { 
+                    if (subcommand == "list") {
+                        throw new NotImplementedException();
                         //Deserializer.ShipList? shipList = await httpClientService.GetShipListAsync();
                     }
                     throw new NotImplementedException();
