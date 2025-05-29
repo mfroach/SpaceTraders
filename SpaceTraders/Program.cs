@@ -141,7 +141,7 @@ class Program {
                         } else {
                             Console.WriteLine("No contracts found or an error occurred.");
                         }
-                    } else if (subcommand.Contains("contract")) {
+                    } else if (subcommand.Contains("contract")) { // do we really want to be doing .contains? or branch
                         string contractID = subcommand.Substring(9);
                         Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
                         Console.WriteLine($"Contract ID: {contract.ContractID}");
