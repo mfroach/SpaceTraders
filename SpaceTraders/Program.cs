@@ -20,6 +20,7 @@ class Program {
             switch (command) {
                 case "agent":
                     Agent? agent = await httpClientService.GetAgentAsync();
+                    SQLBoy.insertAgent(agent);
                     if (agent != null) {
                         Console.WriteLine("Agent Details:");
                         Console.WriteLine($"  Symbol: {agent.Symbol}");
