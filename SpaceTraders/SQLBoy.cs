@@ -5,9 +5,13 @@ using Dapper;
 using SpaceTraders.Models;
 
 public static class SQLBoy {
-    static string connectionString = "Trade.sqlite;";
+    static string connectionString = "Data Source=Trade.sqlite;";
 
     public static string insertAgent(Agent agent) {
+        if (agent == null) {
+            return "Cannot insert null agent."; 
+        }
+
         using (var connection = new SqliteConnection(connectionString)) {
             connection.Open();
             using (var command = connection.CreateCommand()) {
@@ -15,7 +19,8 @@ public static class SQLBoy {
                 command.ExecuteNonQuery();
             }
             var sql =
-                @"INSERT INTO Agents (AgentAccountID, AgentSymbol, AgentHeadquarters, AgentCredits, AgentFaction, AgentShipCount) VALUES (@accountID, @symbol, @headquarters, @credits, @faction, @shipCount)";
+                @"INSERT INTO Agents (AgentAccountID, AgentSymbol, AgentHeadquarters, AgentCredits, AgentFaction, AgentShipCount) 
+                  VALUES (@AccountId, @Symbol, @Headquarters, @Credits, @StartingFaction, @ShipCount)";
             var rowsAffected = connection.Execute(sql, agent);
             return $"{rowsAffected} row(s) inserted.";
         }

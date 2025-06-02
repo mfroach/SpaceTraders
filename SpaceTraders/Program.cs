@@ -17,11 +17,12 @@ class Program {
                 break;
             }
 // TODO Prototype program flow here. Where do we really need subtrees for commands?
+// can we do this? https://www.codeproject.com/Articles/5382189/Building-a-Menu-Driven-Console-Application-in-Csha
             switch (command) {
                 case "agent":
                     Agent? agent = await httpClientService.GetAgentAsync();
-                    SQLBoy.insertAgent(agent);
                     if (agent != null) {
+                        Console.WriteLine(SQLBoy.insertAgent(agent));
                         Console.WriteLine("Agent Details:");
                         Console.WriteLine($"  Symbol: {agent.Symbol}");
                         Console.WriteLine($"  Credits: {agent.Credits}");
