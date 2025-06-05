@@ -13,6 +13,18 @@ public class HttpClientService {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
+    public async Task<Account?> GetAccountAsync() {
+        var deserializer = new Deserializer();
+        try {
+            using var jsonStream = await _client.GetStreamAsync("https://api.spacetraders.io/v2/my/account");
+            return await deserializer.DeserializeAccount(jsonStream);
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to fetch account data failed: {ex.Message}");
+            return null;
+        }
+    }
+
     public async Task<Agent?> GetAgentAsync() {
         var deserializer = new Deserializer();
         try {
@@ -25,7 +37,8 @@ public class HttpClientService {
         }
     }
 
-    public async Task<SystemDetails?> GetSystemAsync(string system) { // getsystem? getwaypoint?
+    public async Task<SystemDetails?> GetSystemAsync(string system) {
+        // getsystem? getwaypoint?
         // Why the hell did I do this. We should be getting location of ships. Agent doesn't move
         // todo repurpose to get any location data
         // todo implement ship location command

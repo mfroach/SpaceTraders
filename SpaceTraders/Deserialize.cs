@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using SpaceTraders.Models;
+using SpaceTraders.Models; // To access Account, AccountApiResponse
 
 public class Deserializer {
 // todo refactor orbital and faction out of deserialize
@@ -194,6 +194,20 @@ public class Deserializer {
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing system data: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<Account?> DeserializeAccount(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            // PropertyNameCaseInsensitive = true, // Can be used, but JsonPropertyName is more explicit
+        };
+        try {
+            var apiResponse = await JsonSerializer.DeserializeAsync<AccountResponseWrapper>(jsonStream, options);
+            return apiResponse?.Data.AccountDetails; // Extracting the Account record
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing account data: {ex.Message}");
             return null;
         }
     }
