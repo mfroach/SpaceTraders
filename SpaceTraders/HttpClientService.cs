@@ -38,9 +38,6 @@ public class HttpClientService {
     }
 
     public async Task<SystemDetails?> GetSystemAsync(string system) {
-        // getsystem? getwaypoint?
-        // Why the hell did I do this. We should be getting location of ships. Agent doesn't move
-        // todo repurpose to get any location data
         // todo implement ship location command
         var deserializer = new Deserializer();
         try {

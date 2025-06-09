@@ -16,8 +16,7 @@ class Program {
             if (command == "exit") {
                 break;
             }
-// TODO Prototype program flow here. Where do we really need subtrees for commands?
-// can we do this? https://www.codeproject.com/Articles/5382189/Building-a-Menu-Driven-Console-Application-in-Csha
+
             switch (command) {
                 case "account":
                     Account? account = await httpClientService.GetAccountAsync();
@@ -25,11 +24,13 @@ class Program {
                         if (!SQLBoy.accountExists(account)) {
                             Console.WriteLine(SQLBoy.insertAccount(account));
                         }
+
                         Console.WriteLine("Account Details:");
                         Console.WriteLine($"  Account ID: {account.Id}\n" +
                                           $"  Account Email: {account.Email}\n" +
                                           $"  Account Created At: {account.CreatedAt}");
                     }
+
                     break;
                 case "agent":
                     Agent? agent = await httpClientService.GetAgentAsync();
@@ -37,6 +38,7 @@ class Program {
                         if (!SQLBoy.agentExists(agent)) {
                             Console.WriteLine(SQLBoy.insertAgent(agent));
                         }
+
                         Console.WriteLine("Agent Details:");
                         Console.WriteLine($"  Symbol: {agent.Symbol}");
                         Console.WriteLine($"  Credits: {agent.Credits}");
@@ -124,11 +126,15 @@ class Program {
                                         foreach (var orbital in waypoint.Orbitals) {
                                             Console.WriteLine($"  Symbol: {orbital.Symbol}");
                                         }
+
                                         Console.WriteLine("   --------");
                                     }
                                 }
                             }
-                        } else {Console.WriteLine("No waypoints in system.");}
+                        } else {
+                            Console.WriteLine("No waypoints in system.");
+                        }
+
                         break;
                     } else {
                         Console.WriteLine("No system found or error occurred.");
@@ -141,7 +147,8 @@ class Program {
                     Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
                     string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-                    if (subcommand == "list") { // Should I just do switch case here?
+                    if (subcommand == "list") {
+                        // Should I just do switch case here?
                         var contractsArray = await httpClientService.GetContractListAsync();
 
                         if (contractsArray != null && contractsArray.Length > 0) {
@@ -157,7 +164,8 @@ class Program {
                         } else {
                             Console.WriteLine("No contracts found or an error occurred.");
                         }
-                    } else if (subcommand.Contains("contract")) { // do we really want to be doing .contains? or branch
+                    } else if (subcommand.Contains("contract")) {
+                        // do we really want to be doing .contains? or branch
                         string contractID = subcommand.Substring(9);
                         Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
                         Console.WriteLine($"Contract ID: {contract.ContractID}");
@@ -167,10 +175,17 @@ class Program {
                                           $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
                                           $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
                                           $"    Accepted: {contract.Accepted}");
-                    } else if (subcommand.Contains("accept")) {
-                        string contractID = subcommand.Substring(7);
-                        using HttpResponseMessage response = await httpClientService.AcceptContract(contractID);
-                        response.EnsureSuccessStatusCode(); // How do I == this return todo Need to branch from here
+                    } else if (subcommand == "accept") {
+                        Console.WriteLine("Enter contract ID:");
+                        string contractID = Console.ReadLine();
+                        try {
+                            using var response = await httpClientService.AcceptContract(contractID);
+                            response.EnsureSuccessStatusCode();
+                        }
+                        catch (HttpRequestException ex) {
+                            Console.WriteLine($"Exception thrown on accepting contract: {ex.Message}");
+                        }
+
                         Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
                         Console.WriteLine("-- Contract Accepted --");
                         Console.WriteLine($"Payment received: {contract.Terms.Payment.OnAccepted} ");
@@ -188,10 +203,16 @@ class Program {
                 case "ships": {
                     Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
                     string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-                    if (subcommand == "list") {
-                        throw new NotImplementedException();
+                    switch (subcommand) {
+                        case "list":
+                            throw new NotImplementedException();
                         //Deserializer.ShipList? shipList = await httpClientService.GetShipListAsync();
+                        case "orbit":
+                            throw new NotImplementedException();
+                        case "route":
+                            throw new NotImplementedException();
                     }
+
                     throw new NotImplementedException();
                 }
                 default:

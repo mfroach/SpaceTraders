@@ -12,8 +12,4 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0-preview.4.25258.110" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="NewtonDeserealizer.cs" />
-  </ItemGroup>
-
 </Project>

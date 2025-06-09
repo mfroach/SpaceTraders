@@ -110,4 +110,8 @@ public static class SQLBoy {
             }
         }
     }
+
+    public static bool contractAccept(Agent contract) {
+        throw new NotImplementedException();
+    }
 }
