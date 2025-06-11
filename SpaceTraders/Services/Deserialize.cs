@@ -5,10 +5,9 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using SpaceTraders.Models; // To access Account, AccountApiResponse
+using SpaceTraders.Models;
 
-public class Deserializer {
-// todo refactor orbital and faction out of deserialize
+public class Deserializer { // todo move all records to respective model files
     public record Waypoint(
         [property: JsonPropertyName("symbol")] string Symbol,
         [property: JsonPropertyName("type")] string Type,
@@ -26,10 +25,6 @@ public class Deserializer {
         [property: JsonPropertyName("modifiers")]
         object[] Modifiers,
         [property: JsonPropertyName("chart")] Chart Chart
-    );
-
-    public record Orbital(
-        [property: JsonPropertyName("symbol")] string Symbol
     );
 
     public record Trait(
@@ -200,11 +195,11 @@ public class Deserializer {
 
     public async Task<Account?> DeserializeAccount(Stream jsonStream) {
         var options = new JsonSerializerOptions {
-            // PropertyNameCaseInsensitive = true, // Can be used, but JsonPropertyName is more explicit
+            PropertyNameCaseInsensitive = true
         };
         try {
             var apiResponse = await JsonSerializer.DeserializeAsync<AccountResponseWrapper>(jsonStream, options);
-            return apiResponse?.Data.AccountDetails; // Extracting the Account record
+            return apiResponse?.Data.AccountDetails;
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing account data: {ex.Message}");

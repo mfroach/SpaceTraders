@@ -65,7 +65,7 @@ public class HttpClientService {
             return null;
         }
     }
-
+    
     public async Task<Deserializer.Contracts[]?> GetContractListAsync() {
         var deserializer = new Deserializer();
         try {
@@ -95,4 +95,5 @@ public class HttpClientService {
     public async Task<HttpResponseMessage> AcceptContract(string contractID) {
         return await _client.PostAsync($"https://api.spacetraders.io/v2/my/contracts/{contractID}/accept", null);
     }
+    
 }

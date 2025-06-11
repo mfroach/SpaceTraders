@@ -7,7 +7,7 @@ public record SystemWaypoint(
     [property: JsonPropertyName("type")] string Type,
     [property: JsonPropertyName("x")] int X,
     [property: JsonPropertyName("y")] int Y,
-    [property: JsonPropertyName("orbitals")] Deserializer.Orbital[]? Orbitals,
+    [property: JsonPropertyName("orbitals")] Orbital[]? Orbitals,
     [property: JsonPropertyName("orbits")] string? Orbits
 );
 

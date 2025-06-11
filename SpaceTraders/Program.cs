@@ -8,9 +8,9 @@ class Program {
         // todo need to catch index out of range when no arg passed
         // can we take stdin instead of arg? and/or pass filename?
         var httpClientService = new HttpClientService(args[0]);
-
+        
         while (true) {
-            Console.WriteLine("Enter a command (e.g., 'agent', 'loc', 'contracts') or 'exit' to quit:");
+            Console.WriteLine("Enter a command or 'exit' to quit:");
             var command = Console.ReadLine()?.Trim().ToLowerInvariant();
 
             if (command == "exit") {
