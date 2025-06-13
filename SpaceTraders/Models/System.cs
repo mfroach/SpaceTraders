@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-
+using SpaceTraders.Services;
 namespace SpaceTraders.Models;
 
 public record SystemWaypoint(
@@ -18,7 +18,7 @@ public record SystemDetails(
     [property: JsonPropertyName("x")] int X,
     [property: JsonPropertyName("y")] int Y,
     [property: JsonPropertyName("waypoints")] SystemWaypoint[]? Waypoints,
-    [property: JsonPropertyName("factions")] Deserializer.Faction[] Factions,
+    [property: JsonPropertyName("factions")] Faction[] Factions,
     [property: JsonPropertyName("constellation")] string Constellation,
     [property: JsonPropertyName("name")] string Name
 );

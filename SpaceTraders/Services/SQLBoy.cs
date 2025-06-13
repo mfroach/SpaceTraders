@@ -6,10 +6,10 @@ using Microsoft.Data.Sqlite;
 using Dapper;
 using SpaceTraders.Models;
 
-public static class SQLBoy {
+public class SQLBoy {
     static string connectionString = "Data Source=Trade.sqlite;";
 
-    public static string insertAccount(Account account) {
+    public string InsertAccount(Account account) {
         if (account == null) {
             return "Cannot insert null account";
         }
@@ -34,7 +34,7 @@ public static class SQLBoy {
         }
     }
 
-    public static bool accountExists(Account account) {
+    public bool AccountExists(Account account) {
         using (var connection = new SqliteConnection(connectionString)) {
             connection.Open();
             if (account == null) {
@@ -57,7 +57,7 @@ public static class SQLBoy {
         }
     }
 
-    public static string insertAgent(Agent agent) {
+    public string InsertAgent(Agent agent) {
         if (agent == null) {
             return "Cannot insert null agent.";
         }
@@ -82,7 +82,7 @@ public static class SQLBoy {
         }
     }
 
-    public static bool agentExists(Agent agent) {
+    public bool AgentExists(Agent agent) {
         using (var connection = new SqliteConnection(connectionString)) {
             connection.Open();
             if (agent == null) {
@@ -111,7 +111,7 @@ public static class SQLBoy {
         }
     }
 
-    public static bool contractAccept(Agent contract) {
+    public bool contractAccept(Agent contract) {
         throw new NotImplementedException();
     }
 }

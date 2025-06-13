@@ -1,13 +1,27 @@
-﻿namespace SpaceTraders;
-
-using System;
+﻿using System.Net.Http.Headers;
+using SpaceTraders.Http;
 using SpaceTraders.Models;
+namespace SpaceTraders;
 
 class Program {
-    static async Task Main(string[] args) {
-        // todo need to catch index out of range when no arg passed
-        // can we take stdin instead of arg? and/or pass filename?
-        var httpClientService = new HttpClientService(args[0]);
+    static async Task Main(string[] args) { // can we take stdin instead of arg? and/or pass filename?
+        
+        if (args.Length == 0 || string.IsNullOrWhiteSpace(args[0]))
+        {
+            Console.WriteLine("Error: Token is required as the first argument.");
+            return;
+        }
+
+        string token = args[0];
+        var sqlBoy = new SQLBoy();
+        var httpClient = new HttpClient();
+        var locationService = new LocationService(httpClient);
+        var agentService = new AgentService(httpClient);
+        var accountService = new AccountService(httpClient);
+        var contractService = new ContractService(httpClient);
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         
         while (true) {
             Console.WriteLine("Enter a command or 'exit' to quit:");
@@ -19,10 +33,10 @@ class Program {
 
             switch (command) {
                 case "account":
-                    Account? account = await httpClientService.GetAccountAsync();
+                    Account? account = await accountService.GetAccountAsync();
                     if (account != null) {
-                        if (!SQLBoy.accountExists(account)) {
-                            Console.WriteLine(SQLBoy.insertAccount(account));
+                        if (!sqlBoy.AccountExists(account)) {
+                            Console.WriteLine(sqlBoy.InsertAccount(account));
                         }
 
                         Console.WriteLine("Account Details:");
@@ -33,11 +47,11 @@ class Program {
 
                     break;
                 case "agent":
-                    Agent? agent = await httpClientService.GetAgentAsync();
+                    Agent? agent = await agentService.GetAgentAsync();
                     if (agent != null) {
-                        if (!SQLBoy.agentExists(agent)) {
-                            Console.WriteLine(SQLBoy.insertAgent(agent));
-                        }
+                        //if (!sqlBoy.agentExists(agent)) {
+                        //    Console.WriteLine(sqlBoy.insertAgent(agent));
+                        //}
 
                         Console.WriteLine("Agent Details:");
                         Console.WriteLine($"  Symbol: {agent.Symbol}");
@@ -54,7 +68,7 @@ class Program {
                 case "way": {
                     Console.Write("Enter waypoint symbol: ");
                     string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-                    Deserializer.Waypoint? location = await httpClientService.GetWaypointAsync(subcommand);
+                    Waypoint? location = await locationService.GetWaypointAsync(subcommand);
                     if (location != null) {
                         Console.WriteLine("Waypoint Details:");
                         Console.WriteLine($"  Symbol: {location.Symbol}");
@@ -105,7 +119,7 @@ class Program {
                 case "system": {
                     Console.Write("Enter system symbol: ");
                     string? subcommand = Console.ReadLine()?.Trim().ToUpper();
-                    SystemDetails? system = await httpClientService.GetSystemAsync(subcommand);
+                    SystemDetails? system = await locationService.GetSystemAsync(subcommand);
                     if (system != null) {
                         Console.WriteLine("System Details:");
                         Console.WriteLine($"  Name: {system.Name}");
@@ -145,11 +159,11 @@ class Program {
                 case "contracts": {
                     // todo on enter 'contracts', only goto root shell when 'exit', probably don't use goto
                     Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]'");
-                    string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-
+                    string subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    
                     if (subcommand == "list") {
                         // Should I just do switch case here?
-                        var contractsArray = await httpClientService.GetContractListAsync();
+                        var contractsArray = await contractService.GetContractListAsync();
 
                         if (contractsArray != null && contractsArray.Length > 0) {
                             foreach (var contract in contractsArray) {
@@ -167,7 +181,7 @@ class Program {
                     } else if (subcommand.Contains("contract")) {
                         // do we really want to be doing .contains? or branch
                         string contractID = subcommand.Substring(9);
-                        Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
+                        Contract? contract = await contractService.GetContractAsync(contractID);
                         Console.WriteLine($"Contract ID: {contract.ContractID}");
                         Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
                                           $"    Type: {contract.ContractType}\n" +
@@ -178,15 +192,19 @@ class Program {
                     } else if (subcommand == "accept") {
                         Console.WriteLine("Enter contract ID:");
                         string contractID = Console.ReadLine();
-                        try {
-                            using var response = await httpClientService.AcceptContract(contractID);
-                            response.EnsureSuccessStatusCode();
+                        if (contractID != null) {
+                            try {
+                                using var response = await contractService.AcceptContractAsync(contractID);
+                                response.EnsureSuccessStatusCode();
+                            }
+                            catch (HttpRequestException ex) {
+                                Console.WriteLine($"Exception thrown on accepting contract: {ex.Message}");
+                            }
+                        } else {
+                            Console.WriteLine("No input.");
+                            break;
                         }
-                        catch (HttpRequestException ex) {
-                            Console.WriteLine($"Exception thrown on accepting contract: {ex.Message}");
-                        }
-
-                        Deserializer.Contract? contract = await httpClientService.GetContractAsync(contractID);
+                        Contract? contract = await contractService.GetContractAsync(contractID);
                         Console.WriteLine("-- Contract Accepted --");
                         Console.WriteLine($"Payment received: {contract.Terms.Payment.OnAccepted} ");
                         Console.WriteLine($"Contract ID: {contract.ContractID}");
