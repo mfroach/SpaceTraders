@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
+using SpaceTraders.Models;
 
 namespace SpaceTraders.Models;
 
-/*public record ShipListResponseWrapper(
+internal record ShipListResponseWrapper(
     [property: JsonPropertyName("data")] Ship[] Data,
-    [property: JsonPropertyName("meta")] Deserializer.Meta Meta
-);*/
+    [property: JsonPropertyName("meta")] Meta Meta);
 
 public record Registration(
     [property: JsonPropertyName("name")] string Name,
@@ -190,4 +190,8 @@ public record Ship(
     [property: JsonPropertyName("fuel")] Fuel Fuel,
     [property: JsonPropertyName("cooldown")]
     Cooldown Cooldown
+);
+
+public record ShipList(
+    [property: JsonPropertyName("symbol")] string Symbol
 );

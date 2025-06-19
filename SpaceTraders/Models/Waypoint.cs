@@ -3,6 +3,8 @@ using SpaceTraders.Services;
 
 namespace SpaceTraders.Models;
 
+internal record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
+
 public record Waypoint(
     [property: JsonPropertyName("symbol")] string Symbol,
     [property: JsonPropertyName("type")] string Type,
@@ -40,4 +42,8 @@ public record Chart(
     string SubmittedBy,
     [property: JsonPropertyName("submittedOn")]
     DateTime SubmittedOn
+);
+
+public record Orbital(
+    [property: JsonPropertyName("symbol")] string Symbol
 );

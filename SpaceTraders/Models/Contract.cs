@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace SpaceTraders.Models;
 
+internal record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
+internal record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
+
 public record Contracts( // rename ContractsList?
     [property: JsonPropertyName("id")] string ContractID,
     [property: JsonPropertyName("factionSymbol")]

@@ -2,6 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace SpaceTraders.Models;
 
+internal record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
+
 public record Agent(
     [property: JsonPropertyName("accountId")]
     string AccountId,

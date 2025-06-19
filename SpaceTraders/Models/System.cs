@@ -2,6 +2,8 @@ using System.Text.Json.Serialization;
 using SpaceTraders.Services;
 namespace SpaceTraders.Models;
 
+internal record SystemResponseWrapper([property: JsonPropertyName("data")] SystemDetails Data);
+
 public record SystemWaypoint(
     [property: JsonPropertyName("symbol")] string Symbol,
     [property: JsonPropertyName("type")] string Type,
