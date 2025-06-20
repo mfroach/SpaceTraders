@@ -4,6 +4,7 @@ using SpaceTraders.Services;
 namespace SpaceTraders.Models;
 
 internal record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
+internal record WaypointListResponseWrapper([property: JsonPropertyName("data")] Waypoint[] Data);
 
 public record Waypoint(
     [property: JsonPropertyName("symbol")] string Symbol,

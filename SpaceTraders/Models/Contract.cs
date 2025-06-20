@@ -2,20 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace SpaceTraders.Models;
 
-internal record ContractListResponseWrapper([property: JsonPropertyName("data")] Contracts[] Data);
+internal record ContractListResponseWrapper([property: JsonPropertyName("data")] Contract[] Data);
 internal record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
 
-public record Contracts( // rename ContractsList?
-    [property: JsonPropertyName("id")] string ContractID,
-    [property: JsonPropertyName("factionSymbol")]
-    string FactionSymbol,
-    [property: JsonPropertyName("type")] string ContractType,
-    [property: JsonPropertyName("terms")] Terms Terms,
-    [property: JsonPropertyName("accepted")]
-    bool Accepted
-);
-
-public record Contract( // todo define the rest of the properties
+public record Contract(
     [property: JsonPropertyName("id")] string ContractID,
     [property: JsonPropertyName("factionSymbol")]
     string FactionSymbol,

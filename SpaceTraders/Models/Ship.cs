@@ -5,7 +5,12 @@ namespace SpaceTraders.Models;
 
 internal record ShipListResponseWrapper(
     [property: JsonPropertyName("data")] Ship[] Data,
-    [property: JsonPropertyName("meta")] Meta Meta);
+    [property: JsonPropertyName("meta")] Meta Meta
+    );
+
+internal record ShipResponseWrapper(
+    [property: JsonPropertyName("data")] Ship Data
+);
 
 public record Registration(
     [property: JsonPropertyName("name")] string Name,

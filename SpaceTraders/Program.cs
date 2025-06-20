@@ -96,52 +96,68 @@ class Program {
     }
 
     static async Task waypointSubmenu(LocationService locationService) {
-        Console.Write("Enter waypoint symbol: ");
+        Console.Write("Enter subcommand (e.g. info, search) ");
         string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-        Waypoint? location = await locationService.GetWaypointAsync(subcommand);
-        if (location != null) {
-            Console.WriteLine("Waypoint Details:");
-            Console.WriteLine($"  Symbol: {location.Symbol}");
-            Console.WriteLine($"  Type: {location.Type}");
-            Console.WriteLine($"  System Symbol: {location.SystemSymbol}");
-            Console.WriteLine($"  Coordinates: X={location.X}, Y={location.Y}");
-            Console.WriteLine($"  Is Under Construction: {location.IsUnderConstruction}");
+        switch (subcommand) {
+            case "info":
+                string? wayInfo = Console.ReadLine()?.Trim().ToLowerInvariant();
+                if (wayInfo != null) {
+                    Waypoint? location = await locationService.GetWaypointAsync(wayInfo);
+                    Console.WriteLine("Waypoint Details:");
+                    Console.WriteLine($"  Symbol: {location.Symbol}");
+                    Console.WriteLine($"  Type: {location.Type}");
+                    Console.WriteLine($"  System Symbol: {location.SystemSymbol}");
+                    Console.WriteLine($"  Coordinates: X={location.X}, Y={location.Y}");
+                    Console.WriteLine($"  Is Under Construction: {location.IsUnderConstruction}");
 
-            if (location.Faction != null) {
-                Console.WriteLine($"  Faction Symbol: {location.Faction.Symbol}");
-            }
+                    if (location.Faction != null) {
+                        Console.WriteLine($"  Faction Symbol: {location.Faction.Symbol}");
+                    }
 
-            Console.WriteLine("  Orbitals:");
-            if (location.Orbitals != null && location.Orbitals.Length > 0) {
-                foreach (var orbital in location.Orbitals) {
-                    Console.WriteLine($"    - {orbital.Symbol}");
+                    Console.WriteLine("  Orbitals:");
+                    if (location.Orbitals != null && location.Orbitals.Length > 0) {
+                        foreach (var orbital in location.Orbitals) {
+                            Console.WriteLine($"    - {orbital.Symbol}");
+                        }
+                    } else {
+                        Console.WriteLine("    None");
+                    }
+
+                    Console.WriteLine("  Traits:");
+                    if (location.Traits != null && location.Traits.Length > 0) {
+                        foreach (var trait in location.Traits) {
+                            Console.WriteLine($"    - {trait.Name} ({trait.Symbol}): {trait.Description}");
+                        }
+                    } else {
+                        Console.WriteLine("    None");
+                    }
+
+                    if (location.Chart != null) {
+                        Console.WriteLine("  Chart Details:");
+                        Console.WriteLine($"    Waypoint Symbol: {location.Chart.WaypointSymbol}");
+                        Console.WriteLine($"    Submitted By: {location.Chart.SubmittedBy}");
+                        Console.WriteLine($"    Submitted On: {location.Chart.SubmittedOn}");
+                    }
+
+                    // Modifiers can be complex, printing count for now
+                    if (location.Modifiers != null) {
+                        Console.WriteLine($"  Modifiers Count: {location.Modifiers.Length}");
+                    }
+                } else {
+                    Console.WriteLine("Failed to retrieve or deserialize location data.");
                 }
-            } else {
-                Console.WriteLine("    None");
-            }
 
-            Console.WriteLine("  Traits:");
-            if (location.Traits != null && location.Traits.Length > 0) {
-                foreach (var trait in location.Traits) {
-                    Console.WriteLine($"    - {trait.Name} ({trait.Symbol}): {trait.Description}");
+                break;
+            case "search":
+                Console.WriteLine("Enter system to search: ");
+                string? searchSystem = Console.ReadLine()?.Trim().ToUpperInvariant();
+                Console.WriteLine("Enter trait to search for: ");
+                string? searchTrait = Console.ReadLine()?.Trim().ToUpperInvariant();
+                Waypoint[]? searchLocation = await locationService.GetWaypointListByTraitAsync(searchSystem, searchTrait);
+                foreach (var x in searchLocation) {
+                    Console.WriteLine($"Waypoint: {x.Symbol}");
                 }
-            } else {
-                Console.WriteLine("    None");
-            }
-
-            if (location.Chart != null) {
-                Console.WriteLine("  Chart Details:");
-                Console.WriteLine($"    Waypoint Symbol: {location.Chart.WaypointSymbol}");
-                Console.WriteLine($"    Submitted By: {location.Chart.SubmittedBy}");
-                Console.WriteLine($"    Submitted On: {location.Chart.SubmittedOn}");
-            }
-
-            // Modifiers can be complex, printing count for now
-            if (location.Modifiers != null) {
-                Console.WriteLine($"  Modifiers Count: {location.Modifiers.Length}");
-            }
-        } else {
-            Console.WriteLine("Failed to retrieve or deserialize location data.");
+                break;
         }
     }
 
@@ -188,8 +204,28 @@ class Program {
         switch (subcommand) {
             case "list":
                 Ship[]? shipList = await shipService.GetShipListAsync();
-                foreach (var ship in shipList) {
-                    Console.WriteLine($"Symbol: {ship.Symbol}");
+                foreach (var i in shipList) {
+                    Console.WriteLine($"Symbol: {i.Symbol}");
+                }
+
+                break;
+            case "info":
+                Console.WriteLine("Enter ship symbol:");
+                string shipSymbol = Console.ReadLine().ToUpper();
+                Ship? ship = await shipService.GetShipAsync(shipSymbol);
+                Console.WriteLine("Ship Details:\n" +
+                                  $"    Ship Location: {ship.Nav.WaypointSymbol}\n" +
+                                  $"    Ship Status: {ship.Nav.Status} - Mode: {ship.Nav.FlightMode}\n" +
+                                  $"    Ship Role: {ship.Registration.Role}\n"
+                );
+                if (ship.Nav.Route.Origin.Symbol != ship.Nav.Route.Destination.Symbol) {
+                    Console.WriteLine("Route:\n" +
+                                      $"    Ship Origin: {ship.Nav.Route.Origin.Symbol}\n" +
+                                      $"    Ship Destination: {ship.Nav.Route.Destination.Symbol}\n" +
+                                      $"    Ship Arrival: {ship.Nav.Route.Arrival}\n" +
+                                      $"    Ship Fuel: {ship.Fuel.Current} out of {ship.Fuel.Capacity}\n" +
+                                      $"    Ship Cargo: {ship.Cargo.Units} out of {ship.Cargo.Capacity}"
+                    );
                 }
 
                 break;

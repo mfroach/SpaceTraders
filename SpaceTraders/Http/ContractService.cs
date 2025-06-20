@@ -3,7 +3,7 @@ using SpaceTraders.Models;
 namespace SpaceTraders.Http;
 
 public class ContractService(HttpClient httpClient) : BaseApiService(httpClient) {
-    public async Task<Contracts[]?> GetContractListAsync() {
+    public async Task<Contract[]?> GetContractListAsync() {
         try {
             await using var jsonStream =
                 await HttpClient.GetStreamAsync("https://api.spacetraders.io/v2/my/contracts");

@@ -32,8 +32,22 @@ public class Deserializer {
             return null;
         }
     }
+    
+    public async Task<Waypoint[]?> DeserializeWaypointList(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var response = await JsonSerializer.DeserializeAsync<WaypointListResponseWrapper>(jsonStream, options);
+            return response?.Data;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing waypoint data: {ex.Message}");
+            return null;
+        }
+    }
 
-    public async Task<Contracts[]?> DeserializeContractList(Stream jsonStream) {
+    public async Task<Contract[]?> DeserializeContractList(Stream jsonStream) {
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true
         };
@@ -71,6 +85,20 @@ public class Deserializer {
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing ship list data: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<Ship?> DeserializeShip(Stream jsonStream) {
+        var options = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        };
+        try {
+            var response = await JsonSerializer.DeserializeAsync<ShipResponseWrapper>(jsonStream, options);
+            return response != null ? (response.Data) : null;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing ship data: {ex.Message}");
             return null;
         }
     }
