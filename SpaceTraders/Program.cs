@@ -10,48 +10,10 @@ class Program {
             Console.WriteLine("Error: Token is required as the first argument.");
             return;
         }
-
         string token = args[0];
         var httpClient = InitialiseHttpClient(token);
         //var sqlBoy = new SQLBoy();
-        var locationService = new LocationService(httpClient);
-        var agentService = new AgentService(httpClient);
-        var accountService = new AccountService(httpClient);
-        var contractService = new ContractService(httpClient);
-        var shipService = new ShipService(httpClient);
-
-        while (true) {
-            Console.WriteLine("Enter a command or 'exit' to quit:");
-            var command = Console.ReadLine()?.Trim().ToLowerInvariant();
-
-            if (command == "exit") {
-                break;
-            }
-
-            switch (command) {
-                case "account":
-                    await getAccount(accountService);
-                    break;
-                case "agent":
-                    await getAgent(agentService);
-                    break;
-                case "way":
-                    await waypointSubmenu(locationService);
-                    break;
-                case "system":
-                    await systemSubmenu(locationService);
-                    break;
-                case "contracts":
-                    await contractsSubmenu(contractService);
-                    break;
-                case "ships":
-                    await shipsSubmenu(shipService);
-                    break;
-                default:
-                    Console.WriteLine("Unknown command.");
-                    break;
-            }
-        }
+        await UserMenu(httpClient);
     }
 
     private static HttpClient InitialiseHttpClient(string token) {
@@ -61,8 +23,47 @@ class Program {
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         return httpClient;
     }
+    
+    static async Task UserMenu(HttpClient httpClient) {
+        var locationService = new LocationService(httpClient);
+        var agentService = new AgentService(httpClient);
+        var accountService = new AccountService(httpClient);
+        var contractService = new ContractService(httpClient);
+        var shipService = new ShipService(httpClient);
+        while (true) {
+            Console.WriteLine("Enter a command or 'exit' to quit:");
+            var command = Console.ReadLine()?.Trim().ToLowerInvariant();
+            if (command == "exit") {
+                break;
+            }
 
-    static async Task getAccount(AccountService accountService) {
+            switch (command) {
+                case "account":
+                    await GetAccount(accountService);
+                    break;
+                case "agent":
+                    await GetAgent(agentService);
+                    break;
+                case "way":
+                    await WaypointSubmenu(locationService);
+                    break;
+                case "system":
+                    await SystemSubmenu(locationService);
+                    break;
+                case "contracts":
+                    await ContractsSubmenu(contractService);
+                    break;
+                case "ships":
+                    await ShipsSubmenu(shipService);
+                    break;
+                default:
+                    Console.WriteLine("Unknown command.");
+                    break;
+            }
+        }
+    }
+
+    static async Task GetAccount(AccountService accountService) {
         Account? account = await accountService.GetAccountAsync();
         if (account != null) {
             //if (!sqlBoy.AccountExists(account)) {
@@ -76,7 +77,7 @@ class Program {
         }
     }
 
-    static async Task getAgent(AgentService agentService) {
+    static async Task GetAgent(AgentService agentService) {
         Agent? agent = await agentService.GetAgentAsync();
         if (agent != null) {
             //if (!sqlBoy.agentExists(agent)) {
@@ -95,7 +96,7 @@ class Program {
         }
     }
 
-    static async Task waypointSubmenu(LocationService locationService) {
+    static async Task WaypointSubmenu(LocationService locationService) {
         Console.Write("Enter subcommand (e.g. info, search) ");
         string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
         switch (subcommand) {
@@ -161,7 +162,7 @@ class Program {
         }
     }
 
-    static async Task systemSubmenu(LocationService locationService) {
+    static async Task SystemSubmenu(LocationService locationService) {
         Console.Write("Enter system symbol: ");
         string? subcommand = Console.ReadLine()?.Trim().ToUpper();
         SystemDetails? system = await locationService.GetSystemAsync(subcommand);
@@ -198,7 +199,7 @@ class Program {
         }
     }
 
-    static async Task shipsSubmenu(ShipService shipService) {
+    static async Task ShipsSubmenu(ShipService shipService) {
         Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
         string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
         switch (subcommand) {
@@ -240,7 +241,7 @@ class Program {
         }
     }
 
-    static async Task contractsSubmenu(ContractService contractService) {
+    static async Task ContractsSubmenu(ContractService contractService) {
         Console.WriteLine("Contracts sub-commands: 'list', 'contract [ID]', 'accept'");
         string subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
 
