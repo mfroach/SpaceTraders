@@ -14,5 +14,4 @@ public class AccountService(HttpClient httpClient) : BaseApiService(httpClient) 
             return null;
         }
     }
-    
 }

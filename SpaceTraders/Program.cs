@@ -11,17 +11,9 @@ class Program {
             return;
         }
         string token = args[0];
-        var httpClient = InitialiseHttpClient(token);
+        var httpClient = BaseApiService.InitialiseHttpClient(token);
         //var sqlBoy = new SQLBoy();
         await UserMenu(httpClient);
-    }
-
-    private static HttpClient InitialiseHttpClient(string token) {
-        var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Accept.Clear();
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        return httpClient;
     }
     
     static async Task UserMenu(HttpClient httpClient) {
@@ -230,8 +222,12 @@ class Program {
                 }
 
                 break;
-            case "orbit":
-                throw new NotImplementedException();
+            case "orbit": 
+                Console.WriteLine("Enter ship symbol:");
+                string orbitSymbol = Console.ReadLine().ToUpper();
+                string orbitShip = await shipService.OrbitShipAsync(orbitSymbol);
+                Console.WriteLine($"Ship status: {orbitShip}");
+                break;
             case "dock":
                 throw new NotImplementedException();
             case "refuel":

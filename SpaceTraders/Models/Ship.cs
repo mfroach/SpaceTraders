@@ -8,7 +8,11 @@ internal record ShipListResponseWrapper(
     [property: JsonPropertyName("meta")] Meta Meta
     );
 
-internal record ShipResponseWrapper(
+internal record ShipStatusResponseWrapper(
+    [property: JsonPropertyName("data")] Ship Data
+);
+
+public record ShipResponseWrapper(
     [property: JsonPropertyName("data")] Ship Data
 );
 
@@ -195,8 +199,4 @@ public record Ship(
     [property: JsonPropertyName("fuel")] Fuel Fuel,
     [property: JsonPropertyName("cooldown")]
     Cooldown Cooldown
-);
-
-public record ShipList(
-    [property: JsonPropertyName("symbol")] string Symbol
 );
