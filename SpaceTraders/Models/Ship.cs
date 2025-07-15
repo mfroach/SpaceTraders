@@ -3,6 +3,13 @@ using SpaceTraders.Models;
 
 namespace SpaceTraders.Models;
 
+// Serialization records
+public class NavData {
+    public string Waypoint { get; set; }
+}
+
+// Deserialization records
+
 internal record ShipListResponseWrapper(
     [property: JsonPropertyName("data")] Ship[] Data,
     [property: JsonPropertyName("meta")] Meta Meta

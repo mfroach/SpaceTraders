@@ -20,18 +20,33 @@ public abstract class BaseApiService {
         return httpClient;
     }
 
-    protected async Task<Stream> Get(string endpoint) { // todo
+    protected async Task<Stream> Get(string endpoint) {
         var uri = new Uri($"https://api.spacetraders.io/v2/{endpoint}");
         try {
             return await HttpClient.GetStreamAsync(uri);
         }
         catch (HttpRequestException ex) {
-            Console.WriteLine($"HTTP Request failed: {ex.Message}");
+            Console.WriteLine($"HTTP GET request failed: {ex.Message}");
             return null;
         }
     }
 
-    protected Stream Post(string endpoint) {
+    protected async Task<HttpResponseMessage> Post(string endpoint,HttpContent payload) {
+        try {
+            var response = await HttpClient.PostAsync(new Uri($"https://api.spacetraders.io/v2/{endpoint}"), payload);
+            return response;
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP POST request failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    internal HttpContent RequestBuilder(string requestType, string[]? content) {
+        
+        // todo take requestType and build object based on that type, define like records in Models, or constructors?
+        // should content be array?
+        
         throw new NotImplementedException();
     }
 }

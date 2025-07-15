@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using SpaceTraders.Http;
 using SpaceTraders.Models;
 
@@ -10,12 +11,13 @@ class Program {
             Console.WriteLine("Error: Token is required as the first argument.");
             return;
         }
+
         string token = args[0];
         var httpClient = BaseApiService.InitialiseHttpClient(token);
         //var sqlBoy = new SQLBoy();
         await UserMenu(httpClient);
     }
-    
+
     static async Task UserMenu(HttpClient httpClient) {
         var locationService = new LocationService(httpClient);
         var agentService = new AgentService(httpClient);
@@ -146,10 +148,12 @@ class Program {
                 string? searchSystem = Console.ReadLine()?.Trim().ToUpperInvariant();
                 Console.WriteLine("Enter trait to search for: ");
                 string? searchTrait = Console.ReadLine()?.Trim().ToUpperInvariant();
-                Waypoint[]? searchLocation = await locationService.GetWaypointListByTraitAsync(searchSystem, searchTrait);
+                Waypoint[]? searchLocation =
+                    await locationService.GetWaypointListByTraitAsync(searchSystem, searchTrait);
                 foreach (var x in searchLocation) {
                     Console.WriteLine($"Waypoint: {x.Symbol}");
                 }
+
                 break;
         }
     }
@@ -192,48 +196,52 @@ class Program {
     }
 
     static async Task ShipsSubmenu(ShipService shipService) {
-        Console.WriteLine("Ships sub-commands: 'list', 'orbit'");
+        Console.WriteLine("Enter ship symbol or 'list':");
         string? subcommand = Console.ReadLine()?.Trim().ToLowerInvariant();
-        switch (subcommand) {
-            case "list":
-                Ship[]? shipList = await shipService.GetShipListAsync();
-                foreach (var i in shipList) {
-                    Console.WriteLine($"Symbol: {i.Symbol}");
-                }
-
-                break;
-            case "info":
-                Console.WriteLine("Enter ship symbol:");
-                string shipSymbol = Console.ReadLine().ToUpper();
-                Ship? ship = await shipService.GetShipAsync(shipSymbol);
-                Console.WriteLine("Ship Details:\n" +
-                                  $"    Ship Location: {ship.Nav.WaypointSymbol}\n" +
-                                  $"    Ship Status: {ship.Nav.Status} - Mode: {ship.Nav.FlightMode}\n" +
-                                  $"    Ship Role: {ship.Registration.Role}\n"
-                );
-                if (ship.Nav.Route.Origin.Symbol != ship.Nav.Route.Destination.Symbol) {
-                    Console.WriteLine("Route:\n" +
-                                      $"    Ship Origin: {ship.Nav.Route.Origin.Symbol}\n" +
-                                      $"    Ship Destination: {ship.Nav.Route.Destination.Symbol}\n" +
-                                      $"    Ship Arrival: {ship.Nav.Route.Arrival}\n" +
-                                      $"    Ship Fuel: {ship.Fuel.Current} out of {ship.Fuel.Capacity}\n" +
-                                      $"    Ship Cargo: {ship.Cargo.Units} out of {ship.Cargo.Capacity}"
+        if (subcommand == "list") {
+            Ship[]? shipList = await shipService.GetShipListAsync();
+            foreach (var i in shipList) {
+                Console.WriteLine($"Symbol: {i.Symbol}");
+            }
+        } else {
+            string shipSymbol = subcommand.ToUpperInvariant();
+            Console.WriteLine($"Ship subcommands for {shipSymbol}: 'info' 'orbit' 'dock' 'refuel' 'route'");
+            string shipSubcommand = Console.ReadLine();
+            switch (shipSubcommand) {
+                case "info":
+                    Ship? ship = await shipService.GetShipAsync(shipSymbol);
+                    Console.WriteLine("Ship Details:\n" +
+                                      $"    Ship Location: {ship.Nav.WaypointSymbol}\n" +
+                                      $"    Ship Status: {ship.Nav.Status} - Mode: {ship.Nav.FlightMode}\n" +
+                                      $"    Ship Role: {ship.Registration.Role}\n"
                     );
-                }
+                    if (ship.Nav.Route.Origin.Symbol != ship.Nav.Route.Destination.Symbol) {
+                        Console.WriteLine("Route:\n" +
+                                          $"    Ship Origin: {ship.Nav.Route.Origin.Symbol}\n" +
+                                          $"    Ship Destination: {ship.Nav.Route.Destination.Symbol}\n" +
+                                          $"    Ship Arrival: {ship.Nav.Route.Arrival}\n" +
+                                          $"    Ship Fuel: {ship.Fuel.Current} out of {ship.Fuel.Capacity}\n" +
+                                          $"    Ship Cargo: {ship.Cargo.Units} out of {ship.Cargo.Capacity}"
+                        );
+                    }
 
-                break;
-            case "orbit": 
-                Console.WriteLine("Enter ship symbol:");
-                string orbitSymbol = Console.ReadLine().ToUpper();
-                string orbitShip = await shipService.OrbitShipAsync(orbitSymbol);
-                Console.WriteLine($"Ship status: {orbitShip}");
-                break;
-            case "dock":
-                throw new NotImplementedException();
-            case "refuel":
-                throw new NotImplementedException();
-            case "route":
-                throw new NotImplementedException();
+                    break;
+                case "orbit":
+                    string orbitShip = await shipService.OrbitShipAsync(shipSymbol);
+                    Console.WriteLine($"Ship status: {orbitShip}");
+                    break;
+                case "dock":
+                    string dockShip = await shipService.DockShipAsync(shipSymbol);
+                    Console.WriteLine($"Ship status: {dockShip}");
+                    break;
+                case "navigate":
+                    Console.WriteLine("Enter destination waypoint:");
+                    string navWaypoint = Console.ReadLine().Trim().ToUpperInvariant();
+                    shipService.NavigateShipAsync(shipSymbol, navWaypoint);
+                    break;
+                case "refuel":
+                    throw new NotImplementedException();
+            }
         }
     }
 
