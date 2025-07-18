@@ -4,9 +4,8 @@ using SpaceTraders.Models;
 namespace SpaceTraders.Models;
 
 // Serialization records
-public class NavData {
-    public string Waypoint { get; set; }
-}
+
+public record NavData(string waypointSymbol);
 
 // Deserialization records
 

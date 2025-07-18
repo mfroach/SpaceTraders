@@ -204,7 +204,7 @@ class Program {
                 Console.WriteLine($"Symbol: {i.Symbol}");
             }
         } else {
-            string shipSymbol = subcommand.ToUpperInvariant();
+            string shipSymbol = subcommand.Trim().ToUpperInvariant();
             Console.WriteLine($"Ship subcommands for {shipSymbol}: 'info' 'orbit' 'dock' 'refuel' 'route'");
             string shipSubcommand = Console.ReadLine();
             switch (shipSubcommand) {
@@ -237,7 +237,10 @@ class Program {
                 case "navigate":
                     Console.WriteLine("Enter destination waypoint:");
                     string navWaypoint = Console.ReadLine().Trim().ToUpperInvariant();
-                    shipService.NavigateShipAsync(shipSymbol, navWaypoint);
+                    var response = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
+                    Console.WriteLine(response);
+                    // todo print ship destination and time to arrival
+                    // I think we need unit testing at this point
                     break;
                 case "refuel":
                     throw new NotImplementedException();

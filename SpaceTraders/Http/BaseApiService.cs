@@ -1,4 +1,7 @@
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using SpaceTraders.Models;
 using SpaceTraders.Services;
 
 namespace SpaceTraders.Http;
@@ -11,7 +14,7 @@ public abstract class BaseApiService {
         HttpClient = httpClient;
         Deserializer = new Deserializer();
     }
-    
+
     public static HttpClient InitialiseHttpClient(string token) {
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -31,7 +34,7 @@ public abstract class BaseApiService {
         }
     }
 
-    protected async Task<HttpResponseMessage> Post(string endpoint,HttpContent payload) {
+    protected async Task<HttpResponseMessage> Post(string endpoint, HttpContent payload) {
         try {
             var response = await HttpClient.PostAsync(new Uri($"https://api.spacetraders.io/v2/{endpoint}"), payload);
             return response;
@@ -42,11 +45,12 @@ public abstract class BaseApiService {
         }
     }
 
-    internal HttpContent RequestBuilder(string requestType, string[]? content) {
-        
-        // todo take requestType and build object based on that type, define like records in Models, or constructors?
-        // should content be array?
-        
-        throw new NotImplementedException();
+    internal HttpContent RequestBuilder<TData>(TData content) {
+        if (content is NavData) {
+            Console.WriteLine("NavData");
+        }
+
+        var json = JsonSerializer.Serialize<TData>(content);
+        return new StringContent(json, Encoding.UTF8, "application/json");
     }
 }

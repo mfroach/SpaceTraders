@@ -65,20 +65,16 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         }
     }
 
-    public async Task<string> NavigateShipAsync(string shipSymbol, string navWaypoint) {
+    public async Task<string?> NavigateShipAsync(string shipSymbol, string navWaypoint) {
         var deserializer = new Deserializer();
         Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/navigate");
-        
-        //  todo build navData object, which is just object with one field "waypointSymbol"
-        //  then serialize navData to JSON, navPayload
-        var navPayload = RequestBuilder("test", ["test","test2"]);
-        
+        NavData navData = new NavData(navWaypoint);
+        var navPayload = RequestBuilder(navData);
         try {
             using var responseMessage =
                 await HttpClient.PostAsync(endpoint, navPayload);
-            Console.WriteLine(responseMessage.StatusCode);
-            return await responseMessage.Content.ReadAsStringAsync();
-            //return await deserializer.DeserializeShipStatus(responseMessage);
+            Console.WriteLine(responseMessage);
+            return await responseMessage.Content.ReadAsStringAsync(); // does this return or is the msg disposed??
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP post to dock {shipSymbol} failed: {ex.Message}");
