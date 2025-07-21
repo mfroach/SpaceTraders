@@ -12,23 +12,8 @@ internal record AccountDataPayload(
     Account AccountDetails
 );
 
-public record Account {
-    [property: JsonPropertyName("id")] public string Id { get; init; }
-
-    [property: JsonPropertyName("email")] public string Email { get; init; }
-
-    [property: JsonPropertyName("createdAt")]
-    public DateTime CreatedAt { get; init; }
-
-    public Account() {
-        Id = string.Empty;
-        Email = string.Empty;
-        CreatedAt = default;
-    }
-
-    public Account(string id, string email, DateTime createdAt) {
-        Id = id;
-        Email = email;
-        CreatedAt = createdAt;
-    }
-}
+public record Account(
+    [property: JsonPropertyName("id")] string Id,
+    [property: JsonPropertyName("email")] string Email,
+    [property: JsonPropertyName("createdAt")] DateTime CreatedAt
+);

@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
-using SpaceTraders.Http;
+﻿using SpaceTraders.Http;
 using SpaceTraders.Models;
 
 namespace SpaceTraders;
@@ -12,9 +10,8 @@ class Program {
             return;
         }
 
-        string token = args[0];
+        string token = args[0]; // todo read token from file
         var httpClient = BaseApiService.InitialiseHttpClient(token);
-        //var sqlBoy = new SQLBoy();
         await UserMenu(httpClient);
     }
 
@@ -60,10 +57,6 @@ class Program {
     static async Task GetAccount(AccountService accountService) {
         Account? account = await accountService.GetAccountAsync();
         if (account != null) {
-            //if (!sqlBoy.AccountExists(account)) {
-            //    Console.WriteLine(sqlBoy.InsertAccount(account));
-            //}
-
             Console.WriteLine("Account Details:");
             Console.WriteLine($"  Account ID: {account.Id}\n" +
                               $"  Account Email: {account.Email}\n" +
@@ -74,10 +67,6 @@ class Program {
     static async Task GetAgent(AgentService agentService) {
         Agent? agent = await agentService.GetAgentAsync();
         if (agent != null) {
-            //if (!sqlBoy.agentExists(agent)) {
-            //    Console.WriteLine(sqlBoy.insertAgent(agent));
-            //}
-
             Console.WriteLine("Agent Details:");
             Console.WriteLine($"  Symbol: {agent.Symbol}");
             Console.WriteLine($"  Credits: {agent.Credits}");

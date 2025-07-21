@@ -47,9 +47,4 @@ public class Deserializer {
     
     public Task<Account?> DeserializeAccount(Stream jsonStream) =>
         DeserializeInternal<AccountResponseWrapper, Account>(jsonStream, r => r.Data.AccountDetails);
-    
-    public async Task<string> DeserializeGenericResponse(HttpResponseMessage responseMessage) {
-        // todo
-        throw new NotImplementedException();
-    }
 }
