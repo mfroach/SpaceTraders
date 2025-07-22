@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 internal record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
 

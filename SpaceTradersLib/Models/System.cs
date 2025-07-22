@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using SpaceTraders.Services;
-namespace SpaceTraders.Models;
+using SpaceTradersLib.Services;
+namespace SpaceTradersLib.Models;
 
 internal record SystemResponseWrapper([property: JsonPropertyName("data")] SystemDetails Data);
 

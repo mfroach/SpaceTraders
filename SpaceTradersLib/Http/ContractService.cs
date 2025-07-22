@@ -1,6 +1,6 @@
-using SpaceTraders.Models;
+using SpaceTradersLib.Models;
 
-namespace SpaceTraders.Http;
+namespace SpaceTradersLib.Http;
 
 public class ContractService(HttpClient httpClient) : BaseApiService(httpClient) {
     public async Task<Contract[]?> GetContractListAsync() {

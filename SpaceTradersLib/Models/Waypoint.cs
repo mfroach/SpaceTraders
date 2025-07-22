@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using SpaceTraders.Services;
+using SpaceTradersLib.Services;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 internal record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
 internal record WaypointListResponseWrapper([property: JsonPropertyName("data")] Waypoint[] Data);

@@ -1,6 +1,7 @@
-using SpaceTraders.Models;
-using SpaceTraders.Services;
-namespace SpaceTraders.Http;
+using SpaceTradersLib.Models;
+using SpaceTradersLib.Services;
+
+namespace SpaceTradersLib.Http;
 
 public class AccountService(HttpClient httpClient) : BaseApiService(httpClient) {
     public async Task<Account?> GetAccountAsync() {

@@ -1,17 +1,11 @@
-﻿using SpaceTraders.Http;
-using SpaceTraders.Models;
+﻿using SpaceTradersLib.Http;
+using SpaceTradersLib.Models;
 
-namespace SpaceTraders;
+namespace SpaceTradersConsole;
 
 class Program {
-    static async Task Main(string[] args) {
-        if (args.Length == 0 || string.IsNullOrWhiteSpace(args[0])) {
-            Console.WriteLine("Error: Token is required as the first argument.");
-            return;
-        }
-
-        string token = args[0]; // todo read token from file
-        var httpClient = BaseApiService.InitialiseHttpClient(token);
+    static async Task Main() {
+        var httpClient = BaseApiService.InitialiseHttpClient();
         await UserMenu(httpClient);
     }
 

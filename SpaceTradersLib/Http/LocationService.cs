@@ -1,6 +1,7 @@
-using SpaceTraders.Models;
-using SpaceTraders.Services;
-namespace SpaceTraders.Http;
+using SpaceTradersLib.Models;
+using SpaceTradersLib.Services;
+
+namespace SpaceTradersLib.Http;
 
 public class LocationService(HttpClient httpClient) : BaseApiService(httpClient) {
     public async Task<SystemDetails?> GetSystemAsync(string system) {

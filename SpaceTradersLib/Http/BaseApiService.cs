@@ -1,10 +1,10 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using SpaceTraders.Models;
-using SpaceTraders.Services;
+using SpaceTradersLib.Models;
+using SpaceTradersLib.Services;
 
-namespace SpaceTraders.Http;
+namespace SpaceTradersLib.Http;
 
 public abstract class BaseApiService {
     protected readonly HttpClient HttpClient;
@@ -15,7 +15,9 @@ public abstract class BaseApiService {
         Deserializer = new Deserializer();
     }
 
-    public static HttpClient InitialiseHttpClient(string token) {
+    public static HttpClient InitialiseHttpClient() {
+        var token = GetToken();
+        if (token is null) throw new IOException("Token was null. Exiting.");
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Accept.Clear();
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -52,5 +54,17 @@ public abstract class BaseApiService {
 
         var json = JsonSerializer.Serialize<TData>(content);
         return new StringContent(json, Encoding.UTF8, "application/json");
+    }
+
+    private static string? GetToken() {
+        try {
+            using StreamReader reader = new("token.txt");
+            string token = reader.ReadToEnd();
+            return token;
+        }
+        catch (IOException ex) {
+            Console.WriteLine($"File could not be read: {ex.Message}");
+            return null;
+        }
     }
 }

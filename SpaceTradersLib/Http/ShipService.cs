@@ -1,10 +1,10 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Xml.Schema;
-using SpaceTraders.Services;
-using SpaceTraders.Models;
+using SpaceTradersLib.Models;
+using SpaceTradersLib.Services;
 
-namespace SpaceTraders.Http;
+namespace SpaceTradersLib.Http;
 
 public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
     public async Task<Ship[]?> GetShipListAsync() {

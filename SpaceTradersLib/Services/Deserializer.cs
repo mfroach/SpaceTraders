@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using SpaceTraders.Models;
+using SpaceTradersLib.Models;
 
-namespace SpaceTraders.Services;
+namespace SpaceTradersLib.Services;
 
 public class Deserializer {
     private async Task<TData?> DeserializeInternal<TWrapper, TData>(

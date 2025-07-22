@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 public record Meta(
     [property: JsonPropertyName("total")] int Total,

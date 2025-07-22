@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTraders", "SpaceTraders\SpaceTraders.csproj", "{818E5504-16A6-482E-AD5C-ED8E708C541C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersConsole", "SpaceTradersConsole\SpaceTradersConsole.csproj", "{818E5504-16A6-482E-AD5C-ED8E708C541C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersConsoleTest", "SpaceTradersConsoleTest\SpaceTradersConsoleTest.csproj", "{9C6374B5-4DF0-4124-89C9-29F29B051ED7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersLibTest", "SpaceTradersLibTest\SpaceTradersLibTest.csproj", "{9C6374B5-4DF0-4124-89C9-29F29B051ED7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersBlazor", "SpaceTradersBlazor\SpaceTradersBlazor.csproj", "{2A1D270F-E931-4720-A7A9-6C0E32ACDE7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersLib", "SpaceTradersLib\SpaceTradersLib.csproj", "{3E9E1705-8413-4A78-B9BB-E4DB46BE3B51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersBlazor", "SpaceTradersBlazor\SpaceTradersBlazor.csproj", "{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +25,14 @@ Global
 		{9C6374B5-4DF0-4124-89C9-29F29B051ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C6374B5-4DF0-4124-89C9-29F29B051ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C6374B5-4DF0-4124-89C9-29F29B051ED7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A1D270F-E931-4720-A7A9-6C0E32ACDE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A1D270F-E931-4720-A7A9-6C0E32ACDE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A1D270F-E931-4720-A7A9-6C0E32ACDE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A1D270F-E931-4720-A7A9-6C0E32ACDE7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E9E1705-8413-4A78-B9BB-E4DB46BE3B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E9E1705-8413-4A78-B9BB-E4DB46BE3B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E9E1705-8413-4A78-B9BB-E4DB46BE3B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E9E1705-8413-4A78-B9BB-E4DB46BE3B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

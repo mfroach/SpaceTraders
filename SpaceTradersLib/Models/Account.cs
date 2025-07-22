@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 internal record AccountResponseWrapper(
     [property: JsonPropertyName("data")] AccountDataPayload Data

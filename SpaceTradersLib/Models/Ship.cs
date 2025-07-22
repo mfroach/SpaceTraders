@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using SpaceTraders.Models;
+using SpaceTradersLib.Models;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 // Serialization records
 

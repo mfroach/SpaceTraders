@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Models;
+namespace SpaceTradersLib.Models;
 
 internal record ContractListResponseWrapper([property: JsonPropertyName("data")] Contract[] Data);
 internal record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
