@@ -210,11 +210,11 @@ class Program {
 
                     break;
                 case "orbit":
-                    string orbitShip = await shipService.OrbitShipAsync(shipSymbol);
+                    string orbitShip = await shipService.ShipOneShotAsync(shipSymbol, "orbit");
                     Console.WriteLine($"Ship status: {orbitShip}");
                     break;
                 case "dock":
-                    string dockShip = await shipService.DockShipAsync(shipSymbol);
+                    string dockShip = await shipService.ShipOneShotAsync(shipSymbol, "dock");
                     Console.WriteLine($"Ship status: {dockShip}");
                     break;
                 case "navigate":

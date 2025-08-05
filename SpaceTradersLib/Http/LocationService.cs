@@ -35,7 +35,7 @@ public class LocationService(HttpClient httpClient) : BaseApiService(httpClient)
         var deserializer = new Deserializer();
         try {
             await using var jsonStream =
-                await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{searchSystem}/waypoints?traits={searchTrait}");
+                await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{searchSystem}/waypoints?traits={searchTrait.ToUpperInvariant()}");
             return await deserializer.DeserializeWaypointList(jsonStream);
         }
         catch (HttpRequestException ex) {

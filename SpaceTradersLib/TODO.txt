@@ -1,0 +1,6 @@
+ -- Complete ship and location services
+    -- Refactor location service for generalized methods where possible
+ 
+ -- Implement interface for Svelte frontend
+    -- Do we want to do deserialization here or should JS handle that?
+    -- What DB can be integrated nicely? Maybe we can just rely on cache

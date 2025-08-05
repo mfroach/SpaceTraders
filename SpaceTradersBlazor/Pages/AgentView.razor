@@ -1,0 +1,18 @@
+@page "/AgentView"
+@using SpaceTradersLib.Http
+@using SpaceTradersLib.Models
+@inject AgentService AgentSvc
+
+<h3>Agent:</h3>
+
+
+@code {
+    protected override async Task OnInitializedAsync() {
+        Agent? agent = await AgentSvc.GetAgentAsync();
+        <p>@agent.AccountId</p>
+        <p>@agent.Symbol</p>
+        <p>@agent.Credits</p>
+        <p>@agent.Headquarters</p>
+        <p>@agent.StartingFaction</p>
+    }
+}

@@ -7,6 +7,8 @@ using SpaceTradersLib.Services;
 namespace SpaceTradersLib.Http;
 
 public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
+    // todo implement oneshot method for get ship info
+    // also we should probably do deserializing outside of service
     public async Task<Ship[]?> GetShipListAsync() {
         var deserializer = new Deserializer();
         try {
@@ -33,40 +35,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         }
     }
 
-    public async Task<string> OrbitShipAsync(string shipSymbol) {
-        var deserializer = new Deserializer();
-        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/orbit");
-        try {
-            using var responseMessage =
-                await HttpClient.PostAsync(endpoint, null);
-            Console.WriteLine(responseMessage.StatusCode);
-            return await responseMessage.Content.ReadAsStringAsync();
-            //return await deserializer.DeserializeShipStatus(responseMessage);
-        }
-        catch (HttpRequestException ex) {
-            Console.WriteLine($"HTTP post to orbit {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
-    }
-
-    public async Task<string> DockShipAsync(string shipSymbol) {
-        var deserializer = new Deserializer();
-        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/dock");
-        try {
-            using var responseMessage =
-                await HttpClient.PostAsync(endpoint, null);
-            Console.WriteLine(responseMessage.StatusCode);
-            return await responseMessage.Content.ReadAsStringAsync();
-            //return await deserializer.DeserializeShipStatus(responseMessage);
-        }
-        catch (HttpRequestException ex) {
-            Console.WriteLine($"HTTP post to dock {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
-    }
-
     public async Task<string?> NavigateShipAsync(string shipSymbol, string navWaypoint) {
-        var deserializer = new Deserializer();
         Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/navigate");
         NavData navData = new NavData(navWaypoint);
         var navPayload = RequestBuilder(navData);
@@ -82,7 +51,17 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         }
     }
 
-    public async Task<string> RefuelShipAsync(string shipSymbol) {
-        throw new NotImplementedException();
+    public async Task<string> ShipOneShotAsync(string shipSymbol, string endpoint) {
+        Uri path = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/{endpoint}");
+        try {
+            using var responseMessage =
+                await HttpClient.PostAsync(path, null);
+            Console.WriteLine(responseMessage.StatusCode);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to {endpoint} {shipSymbol} failed: {ex.Message}");
+            return null;
+        }
     }
 }
