@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersLib", "SpaceTra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersBlazor", "SpaceTradersBlazor\SpaceTradersBlazor.csproj", "{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTradersFrontAPI", "SpaceTradersFrontAPI\SpaceTradersFrontAPI.csproj", "{D2EBED50-DC6A-4228-BFEA-2A1B52973892}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF8328CC-B95E-4DA6-8B4F-9F5109864DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2EBED50-DC6A-4228-BFEA-2A1B52973892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2EBED50-DC6A-4228-BFEA-2A1B52973892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2EBED50-DC6A-4228-BFEA-2A1B52973892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2EBED50-DC6A-4228-BFEA-2A1B52973892}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
