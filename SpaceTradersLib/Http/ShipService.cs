@@ -7,8 +7,6 @@ using SpaceTradersLib.Services;
 namespace SpaceTradersLib.Http;
 
 public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
-    // todo implement oneshot method for get ship info
-    // also we should probably do deserializing outside of service
     public async Task<Ship[]?> GetShipListAsync() {
         var deserializer = new Deserializer();
         try {
@@ -43,7 +41,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
             using var responseMessage =
                 await HttpClient.PostAsync(endpoint, navPayload);
             Console.WriteLine(responseMessage);
-            return await responseMessage.Content.ReadAsStringAsync(); // does this return or is the msg disposed??
+            return await responseMessage.Content.ReadAsStringAsync(); // todo deserialize and create DTO
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP post to dock {shipSymbol} failed: {ex.Message}");
@@ -57,7 +55,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
             using var responseMessage =
                 await HttpClient.PostAsync(path, null);
             Console.WriteLine(responseMessage.StatusCode);
-            return await responseMessage.Content.ReadAsStringAsync();
+            return await responseMessage.Content.ReadAsStringAsync();  // todo deserialize and create DTO
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP post to {endpoint} {shipSymbol} failed: {ex.Message}");

@@ -9,7 +9,8 @@ public sealed class ShipTests {
     [TestMethod]
     [DataRow("BOUNDLESS_BEER-2")]
     public async Task TestOrbitShip(string shipSymbol) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipOneShotAsync(shipSymbol, "orbit");
         Assert.IsNotNull(response);
@@ -19,7 +20,8 @@ public sealed class ShipTests {
     [TestMethod]
     [DataRow("BOUNDLESS_BEER-2")]
     public async Task TestDockShip(string shipSymbol) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipOneShotAsync(shipSymbol, "dock");
         Assert.IsNotNull(response);
@@ -29,7 +31,8 @@ public sealed class ShipTests {
     [TestMethod]
     [DataRow("BOUNDLESS_BEER-2")]
     public async Task TestRefuelShip(string shipSymbol) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipOneShotAsync(shipSymbol, "refuel");
         Assert.IsNotNull(response);
@@ -39,7 +42,8 @@ public sealed class ShipTests {
     [TestMethod]
     [DataRow("BOUNDLESS_BEER-2")]
     public async Task TestExtractShip(string shipSymbol) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipOneShotAsync(shipSymbol, "extract");
         Assert.IsNotNull(response);
@@ -50,7 +54,8 @@ public sealed class ShipTests {
     [DataRow("BOUNDLESS_BEER-2", "X1-BH6-H48")]
     [DataRow("BOUNDLESS_BEER-2", "X1-BH6-H49")]
     public async Task TestNavigateShip(string shipSymbol, string navWaypoint) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
         Assert.IsNotNull(response);
@@ -65,7 +70,8 @@ public sealed class WaypointTests {
     [TestMethod]
     [DataRow("X1-TT8", "shipyard")]
     public async Task TestSearchWaypointList(string systemSymbol, string trait) {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var locationService = new LocationService(httpClient);
         var response = await locationService.GetWaypointListByTraitAsync(systemSymbol, trait);
         Assert.IsNotNull(response);

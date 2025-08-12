@@ -5,7 +5,8 @@ namespace SpaceTradersConsole;
 
 class Program {
     static async Task Main() {
-        var httpClient = BaseApiService.InitialiseHttpClient();
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         await UserMenu(httpClient);
     }
 

@@ -15,16 +15,6 @@ public abstract class BaseApiService {
         Deserializer = new Deserializer();
     }
 
-    public static HttpClient InitialiseHttpClient() {
-        var token = GetToken();
-        if (token is null) throw new IOException("Token was null. Exiting.");
-        var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Accept.Clear();
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        return httpClient;
-    }
-
     protected async Task<Stream> Get(string endpoint) {
         var uri = new Uri($"https://api.spacetraders.io/v2/{endpoint}");
         try {
