@@ -10,4 +10,12 @@
       <None Include="bin\Debug\net9.0\token.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="JsonSchema.Net" Version="7.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Schemas\" />
+    </ItemGroup>
+
 </Project>

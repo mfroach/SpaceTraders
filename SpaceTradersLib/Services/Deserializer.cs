@@ -18,6 +18,18 @@ public class Deserializer {
         }
     }
 
+    private readonly JsonTypeDetector _detector = new JsonTypeDetector();
+
+    public object? Parse(string jsonResponse) {
+        var targetType = _detector.GetTypeForJson(jsonResponse);
+
+        if (targetType != null) {
+            return JsonSerializer.Deserialize(jsonResponse, targetType);
+        }
+        Console.WriteLine("Could not determine the type for the JSON response.");
+        return null;
+    }
+
     public Task<Agent?> DeserializeAgent(Stream jsonStream) =>
         DeserializeInternal<AgentResponseWrapper, Agent?>(jsonStream, r => r.Data);
 
@@ -28,23 +40,29 @@ public class Deserializer {
         DeserializeInternal<WaypointResponseWrapper, Waypoint?>(jsonStream, r => r.Data);
 
     public Task<Contract[]?> DeserializeContractList(Stream jsonStream) =>
-        DeserializeInternal<ContractListResponseWrapper, Contract[]>(jsonStream, r => r.Data);
-    
+        DeserializeInternal<ContractListRoot, Contract[]>(jsonStream, r => r.data);
+
     public Task<Contract?> DeserializeContract(Stream jsonStream) =>
-        DeserializeInternal<ContractResponseWrapper, Contract>(jsonStream, r => r.Data);
+        DeserializeInternal<ContractRoot, Contract>(jsonStream, r => r.data);
+
+    public string? DeserializeContractAccept(HttpResponseMessage httpResponseMessage) =>
+        JsonSerializer.Deserialize<ContractAcceptData>(httpResponseMessage.ToString()).ToString();
 
     public Task<Ship[]?> DeserializeShipList(Stream jsonStream) =>
         DeserializeInternal<ShipListResponseWrapper, Ship[]>(jsonStream, r => r.Data);
-    
+
     public Task<Ship?> DeserializeShip(Stream jsonStream) =>
         DeserializeInternal<ShipResponseWrapper, Ship>(jsonStream, r => r.Data);
 
     public Task<Ship?> DeserializeShipStatus(HttpResponseMessage httpResponseMessage) =>
         throw new NotImplementedException();
-    
+
     public Task<SystemDetails?> DeserializeSystem(Stream jsonStream) =>
         DeserializeInternal<SystemResponseWrapper, SystemDetails>(jsonStream, r => r.Data);
-    
+
     public Task<Account?> DeserializeAccount(Stream jsonStream) =>
         DeserializeInternal<AccountResponseWrapper, Account>(jsonStream, r => r.Data.AccountDetails);
+
+    public ErrorRoot? DeserializeError(HttpResponseMessage httpResponseMessage) =>
+        JsonSerializer.Deserialize<ErrorRoot>(httpResponseMessage.ToString());
 }

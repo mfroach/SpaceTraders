@@ -1,4 +1,5 @@
 ﻿using SpaceTradersLib.Http;
+using SpaceTradersLib.Services;
 
 namespace SpaceTradersLibTest;
 
@@ -12,7 +13,7 @@ public sealed class ShipTests {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipOneShotAsync(shipSymbol, "orbit");
+        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
@@ -23,7 +24,7 @@ public sealed class ShipTests {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipOneShotAsync(shipSymbol, "dock");
+        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "dock");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
@@ -34,7 +35,7 @@ public sealed class ShipTests {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipOneShotAsync(shipSymbol, "refuel");
+        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "refuel");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
@@ -45,7 +46,7 @@ public sealed class ShipTests {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipOneShotAsync(shipSymbol, "extract");
+        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "extract");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
@@ -64,7 +65,7 @@ public sealed class ShipTests {
 }
 
 [TestClass]
-public sealed class WaypointTests {
+public sealed class LocationTests {
     public TestContext TestContext { get; set; }
 
     [TestMethod]
@@ -80,5 +81,62 @@ public sealed class WaypointTests {
             TestContext.WriteLine(x.Type);
             TestContext.WriteLine("---------");
         }
+    }
+}
+
+[TestClass]
+public sealed class ContractTests {
+    public TestContext TestContext { get; set; }
+
+    [TestMethod]
+    [DataRow("123")]
+    public async Task TestGetContract(string contractID) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var contractService = new ContractService(httpClient);
+        var response = await contractService.GetContractAsync(contractID);
+        Assert.IsNotNull(response);
+        
+    }
+    
+    [TestMethod]
+    public async Task TestGetContractList() {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var contractService = new ContractService(httpClient);
+        var response = await contractService.GetContractListAsync();
+        Assert.IsNotNull(response);
+        foreach (var x in response) {
+            TestContext.WriteLine(x.id);
+            TestContext.WriteLine(x.type);
+            TestContext.WriteLine("--------");
+        }
+    }
+
+    [TestMethod]
+    [DataRow("cmea8iw1rqaowri74kk05q8ke")]
+    public async Task TestAcceptContract(string contractID) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var contractService = new ContractService(httpClient);
+        var response = await contractService.AcceptContractAsync(contractID);
+        Assert.IsNotNull(response);
+        TestContext.WriteLine(response);
+    }
+}
+
+[TestClass]
+public sealed class AgentTests {
+    [TestMethod]
+    public async Task TestGetAgent() { // todo probably just define a new GetAgent for testing this
+    /*    var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var agentService = new AgentService(httpClient);
+        var response = await agentService.GetAgentAsync();
+        var deserializer = new Deserializer();
+        var data = deserializer.Parse(response);
+        Assert.IsNotNull(response);
+        TestContext.WriteLine(data);
+    */
     }
 }

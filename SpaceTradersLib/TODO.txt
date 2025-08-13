@@ -1,3 +1,0 @@
- -- Complete ship and location services
-    -- Refactor location service for generalized methods where possible
-    -- Refactor to use BaseAddress across all services

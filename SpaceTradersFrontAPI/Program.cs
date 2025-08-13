@@ -54,17 +54,17 @@ public static class RouteGroupExtensions {
                 var dto = mapper.Map<ShipDTO>(ship);
                 return Results.Ok(dto);
             });
-        group.MapGet("/{shipSymbol}/dock",
-            async (string shipSymbol, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
-                var result = await shipService.ShipOneShotAsync(shipSymbol, "dock");
+        group.MapGet("/{shipSymbol}/{oneShot}",
+            async (string shipSymbol, string oneShot, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
+                var result = await shipService.ShipPostOneShotAsync(shipSymbol, oneShot);
                 if (result is null) {
                     return Results.NoContent();
                 }
                 return Results.Ok(result);
-            });
+            }); // known endpoints: orbit dock warp scrap repair siphon survey scan/systems scan/waypoints extract negotiate/contract chart
         group.MapGet("/{shipSymbol}/orbit",
             async (string shipSymbol, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
-                var result = await shipService.ShipOneShotAsync(shipSymbol, "orbit");
+                var result = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
                 if (result is null) {
                     return Results.NoContent();
                 }

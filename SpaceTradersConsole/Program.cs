@@ -211,11 +211,11 @@ class Program {
 
                     break;
                 case "orbit":
-                    string orbitShip = await shipService.ShipOneShotAsync(shipSymbol, "orbit");
+                    string orbitShip = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
                     Console.WriteLine($"Ship status: {orbitShip}");
                     break;
                 case "dock":
-                    string dockShip = await shipService.ShipOneShotAsync(shipSymbol, "dock");
+                    string dockShip = await shipService.ShipPostOneShotAsync(shipSymbol, "dock");
                     Console.WriteLine($"Ship status: {dockShip}");
                     break;
                 case "navigate":
@@ -241,13 +241,13 @@ class Program {
 
             if (contractsArray != null && contractsArray.Length > 0) {
                 foreach (var contract in contractsArray) {
-                    Console.WriteLine($"Contract ID: {contract.ContractID}");
-                    Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
-                                      $"    Type: {contract.ContractType}\n" +
-                                      $"    Deadline: {contract.Terms.Deadline}\n" +
-                                      $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
-                                      $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
-                                      $"    Accepted: {contract.Accepted}");
+                    Console.WriteLine($"Contract ID: {contract.id}");
+                    Console.WriteLine($"    Faction: {contract.factionSymbol}\n" +
+                                      $"    Type: {contract.type}\n" +
+                                      $"    Deadline: {contract.terms.deadline}\n" +
+                                      $"    Payment on Accepted: {contract.terms.payment.onAccepted}\n" +
+                                      $"    Payment on Fulfilled: {contract.terms.payment.onFulfilled}\n" +
+                                      $"    Accepted: {contract.accepted}");
                 }
             } else {
                 Console.WriteLine("No contracts found or an error occurred.");
@@ -255,13 +255,13 @@ class Program {
         } else if (subcommand.Contains("contract")) {
             string contractID = subcommand.Substring(9);
             Contract? contract = await contractService.GetContractAsync(contractID);
-            Console.WriteLine($"Contract ID: {contract.ContractID}");
-            Console.WriteLine($"    Faction: {contract.FactionSymbol}\n" +
-                              $"    Type: {contract.ContractType}\n" +
-                              $"    Deadline: {contract.Terms.Deadline}\n" +
-                              $"    Payment on Accepted: {contract.Terms.Payment.OnAccepted}\n" +
-                              $"    Payment on Fulfilled: {contract.Terms.Payment.OnFulfilled}\n" +
-                              $"    Accepted: {contract.Accepted}");
+            Console.WriteLine($"Contract ID: {contract.id}");
+            Console.WriteLine($"    Faction: {contract.factionSymbol}\n" +
+                              $"    Type: {contract.type}\n" +
+                              $"    Deadline: {contract.terms.deadline}\n" +
+                              $"    Payment on Accepted: {contract.terms.payment.onAccepted}\n" +
+                              $"    Payment on Fulfilled: {contract.terms.payment.onFulfilled}\n" +
+                              $"    Accepted: {contract.accepted}");
         } else if (subcommand == "accept") {
             Console.WriteLine("Enter contract ID:");
             string contractID = Console.ReadLine();

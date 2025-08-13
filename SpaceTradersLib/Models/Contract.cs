@@ -1,43 +1,33 @@
-using System.Text.Json.Serialization;
-
 namespace SpaceTradersLib.Models;
 
-internal record ContractListResponseWrapper([property: JsonPropertyName("data")] Contract[] Data);
-internal record ContractResponseWrapper([property: JsonPropertyName("data")] Contract Data);
-
+public record ContractListRoot(Contract[] data);
+public record ContractRoot(Contract data);
+public record ContractAcceptRoot(ContractAcceptData data);
+public record ContractAcceptData(Contract contract, Agent agent);
 public record Contract(
-    [property: JsonPropertyName("id")] string ContractID,
-    [property: JsonPropertyName("factionSymbol")]
-    string FactionSymbol,
-    [property: JsonPropertyName("type")] string ContractType,
-    [property: JsonPropertyName("terms")] Terms Terms,
-    [property: JsonPropertyName("accepted")]
-    bool Accepted
+    string id,
+    string factionSymbol,
+    string type,
+    Terms terms,
+    bool accepted,
+    bool fulfilled,
+    string deadlineToAccept
 );
 
 public record Terms(
-    [property: JsonPropertyName("deadline")]
-    DateTime Deadline,
-    [property: JsonPropertyName("payment")]
-    Payment Payment,
-    [property: JsonPropertyName("deliver")]
-    Deliver[] DeliverItems
+    string deadline,
+    Payment payment,
+    Deliver[] deliver
 );
 
 public record Payment(
-    [property: JsonPropertyName("onAccepted")]
-    int OnAccepted,
-    [property: JsonPropertyName("onFulfilled")]
-    int OnFulfilled
+    int onAccepted,
+    int onFulfilled
 );
 
 public record Deliver(
-    [property: JsonPropertyName("tradeSymbol")]
-    string TradeSymbol,
-    [property: JsonPropertyName("destinationSymbol")]
-    string DestinationSymbol,
-    [property: JsonPropertyName("unitsRequired")]
-    int UnitsRequired,
-    [property: JsonPropertyName("unitsFulfilled")]
-    int UnitsFulfilled
+    string tradeSymbol,
+    string destinationSymbol,
+    int unitsRequired,
+    int unitsFulfilled
 );

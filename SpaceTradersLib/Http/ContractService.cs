@@ -27,7 +27,8 @@ public class ContractService(HttpClient httpClient) : BaseApiService(httpClient)
         }
     }
 
-    public async Task<HttpResponseMessage> AcceptContractAsync(string contractId) {
-        return await HttpClient.PostAsync($"https://api.spacetraders.io/v2/my/contracts/{contractId}/accept", null);
+    public async Task<string?> AcceptContractAsync(string contractId) { // this works but test doesn't get a response so deserialize probably fails
+        var response = await HttpClient.PostAsync($"https://api.spacetraders.io/v2/my/contracts/{contractId}/accept", null);
+        return Deserializer.DeserializeContractAccept(response);
     }
 }
