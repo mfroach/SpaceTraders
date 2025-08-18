@@ -2,6 +2,8 @@ My SpaceTraders client.
 
 SpaceTradersLib -- External API access and deserialization of responses.
 
+SpaceTradersFront -- SvelteKit frontend.
+
 SpaceTradersFrontAPI -- Internal ASP.NET minimal API meant for frontend interaction with SpaceTradersLib.
 
-SpaceTradersConsole -- Demo for SpaceTradersLib logic. Will be deprecated with unit tests.
+SpaceTradersLibTests -- Unit tests for SpaceTradersLib.
