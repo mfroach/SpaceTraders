@@ -1,7 +1,7 @@
 using AutoMapper;
 using SpaceTradersFrontAPI.Models;
 using SpaceTradersLib.Models;
-
+// todo Do I need to map all values? Automapper seems to be smart enough to figure out some of them. See WaypointDTO.
 public class AppMappingProfile : Profile {
     public AppMappingProfile() {
         CreateMap<Agent?, AgentDTO>()
@@ -24,5 +24,12 @@ public class AppMappingProfile : Profile {
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
             .ForMember(dest => dest.Factions, opt => opt.MapFrom(src => src.Factions))
             .ForMember(dest => dest.Waypoints, opt => opt.MapFrom(src => src.Waypoints));
+        CreateMap<Waypoint?, WaypointDTO>()
+            .ForMember(dest => dest.symbol, opt => opt.MapFrom(src => src.Symbol))
+            .ForMember(dest => dest.type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.orbitals, opt => opt.MapFrom(src => src.Orbitals));
+        CreateMap<Orbital?, Orbitals>()
+            .ForMember(dest => dest.symbol, opt => opt.MapFrom(src => src.Symbol));
+        CreateMap<Market?, MarketDTO>();
     }
 }

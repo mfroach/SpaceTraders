@@ -8,10 +8,10 @@ public class JsonTypeDetector {
     private readonly Dictionary<Type, JsonSchema> _schemas = new() {
         {
             typeof(Contract),
-            JsonSchema.FromFile("Schemas/Contract.json")
+            JsonSchema.FromFile("C:/Users/MichaelRoach/RiderProjects/SpaceTraders/SpaceTradersLib/Schemas/Contract.json")
         }, {
             typeof(Agent),
-            JsonSchema.FromFile("Schemas/Agent.json")
+            JsonSchema.FromFile("C:/Users/MichaelRoach/RiderProjects/SpaceTraders/SpaceTradersLib/Schemas/Agent.json")
         }
     };
     

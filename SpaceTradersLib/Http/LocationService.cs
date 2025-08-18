@@ -19,7 +19,7 @@ public class LocationService(HttpClient httpClient) : BaseApiService(httpClient)
 
     public async Task<Waypoint?> GetWaypointAsync(string waypoint) {
         var deserializer = new Deserializer();
-        string system = waypoint.Substring(0, 7);
+        string system = waypoint.Substring(0, 6);
         try {
             await using var jsonStream =
                 await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{system}/waypoints/{waypoint}");
@@ -40,6 +40,20 @@ public class LocationService(HttpClient httpClient) : BaseApiService(httpClient)
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP request to fetch location list data failed: {ex.Message}");
+            return null;
+        }
+    }
+    
+    public async Task<Market?> GetMarketAsync(string waypoint) {
+        var deserializer = new Deserializer();
+        string system = waypoint.Substring(0, 6);
+        try {
+            await using var jsonStream =
+                await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/systems/{system}/waypoints/{waypoint}/market");
+            return await deserializer.DeserializeMarket(jsonStream);
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to fetch location data failed: {ex.Message}");
             return null;
         }
     }

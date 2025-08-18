@@ -38,6 +38,9 @@ public class Deserializer {
 
     public Task<Waypoint?> DeserializeWaypoint(Stream jsonStream) =>
         DeserializeInternal<WaypointResponseWrapper, Waypoint?>(jsonStream, r => r.Data);
+    
+    public Task<Market?> DeserializeMarket(Stream jsonStream) =>
+        DeserializeInternal<MarketResponseWrapper, Market?>(jsonStream, r => r.data);
 
     public Task<Contract[]?> DeserializeContractList(Stream jsonStream) =>
         DeserializeInternal<ContractListRoot, Contract[]>(jsonStream, r => r.data);

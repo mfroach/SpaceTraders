@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SpaceTradersFrontAPI.Database;
 using SpaceTradersFrontAPI.Models;
 using SpaceTradersLib.Http;
+using SpaceTradersLib.Models;
 
 namespace SpaceTradersFrontAPI;
 
@@ -90,6 +91,24 @@ public static class RouteGroupExtensions {
             }
 
             var dto = mapper.Map<SystemDTO>(result);
+            return Results.Ok(dto);
+        });
+        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService, [FromServices] IMapper mapper) => {
+            var result = await locationService.GetWaypointAsync(systemSymbol + "-" + waypointSymbol);
+            if (result is null) {
+                return Results.NoContent();
+            }
+
+            var dto = mapper.Map<WaypointDTO>(result);
+            return Results.Ok(dto);
+        });
+        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}/market", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService, [FromServices] IMapper mapper) => {
+            var result = await locationService.GetMarketAsync(systemSymbol + "-" + waypointSymbol);
+            if (result is null) {
+                return Results.NoContent();
+            }
+
+            var dto = mapper.Map<MarketDTO>(result);
             return Results.Ok(dto);
         });
         return group;

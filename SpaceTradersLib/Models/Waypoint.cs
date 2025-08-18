@@ -47,3 +47,56 @@ public record Chart(
 public record Orbital(
     [property: JsonPropertyName("symbol")] string Symbol
 );
+
+public record MarketResponseWrapper(
+    Market data
+);
+
+public record Market(
+    string symbol,
+    Exports[] exports,
+    Imports[] imports,
+    Exchange[] exchange,
+    Transactions[] transactions,
+    TradeGoods[] tradeGoods
+);
+
+public record Exports(
+    string symbol,
+    string name,
+    string description
+);
+
+public record Imports(
+    string symbol,
+    string name,
+    string description
+);
+
+public record Exchange(
+    string symbol,
+    string name,
+    string description
+);
+
+public record Transactions(
+    string waypointSymbol,
+    string shipSymbol,
+    string tradeSymbol,
+    string type,
+    int units,
+    int pricePerUnit,
+    int totalPrice,
+    string timestamp
+);
+
+public record TradeGoods(
+    string symbol,
+    string type,
+    int tradeVolume,
+    string supply,
+    string activity,
+    int purchasePrice,
+    int sellPrice
+);
+

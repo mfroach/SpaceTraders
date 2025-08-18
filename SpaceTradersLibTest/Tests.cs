@@ -1,4 +1,5 @@
-﻿using SpaceTradersLib.Http;
+﻿using Json.More;
+using SpaceTradersLib.Http;
 using SpaceTradersLib.Services;
 
 namespace SpaceTradersLibTest;
@@ -30,6 +31,17 @@ public sealed class ShipTests {
     }
     
     [TestMethod]
+    [DataRow("BOUNDLESS_BEER-1")]
+    public async Task TestChartShip(string shipSymbol) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var shipService = new ShipService(httpClient);
+        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "chart");
+        Assert.IsNotNull(response);
+        TestContext.WriteLine(response);
+    }
+    
+    [TestMethod]
     [DataRow("BOUNDLESS_BEER-2")]
     public async Task TestRefuelShip(string shipSymbol) {
         var httpClient = new HttpClient();
@@ -52,8 +64,7 @@ public sealed class ShipTests {
     }
     
     [TestMethod]
-    [DataRow("BOUNDLESS_BEER-2", "X1-BH6-H48")]
-    [DataRow("BOUNDLESS_BEER-2", "X1-BH6-H49")]
+    [DataRow("BOUNDLESS_BEER-2", "X1-DS2-A1")]
     public async Task TestNavigateShip(string shipSymbol, string navWaypoint) {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
@@ -69,7 +80,7 @@ public sealed class LocationTests {
     public TestContext TestContext { get; set; }
 
     [TestMethod]
-    [DataRow("X1-TT8", "shipyard")]
+    [DataRow("X1-DS2", "marketplace")]
     public async Task TestSearchWaypointList(string systemSymbol, string trait) {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
@@ -80,6 +91,22 @@ public sealed class LocationTests {
             TestContext.WriteLine(x.Symbol);
             TestContext.WriteLine(x.Type);
             TestContext.WriteLine("---------");
+        }
+    }
+    
+    [TestMethod]
+    [DataRow("X1-DS2-A1")]
+    public async Task TestGetMarket(string waypointSymbol) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var locationService = new LocationService(httpClient);
+        var response = await locationService.GetMarketAsync(waypointSymbol);
+        Assert.IsNotNull(response);
+        TestContext.WriteLine(response.symbol);
+        foreach (var x in response.imports) {
+            TestContext.WriteLine(x.symbol);
+            TestContext.WriteLine(x.description);
+            TestContext.WriteLine("---");
         }
     }
 }
@@ -96,7 +123,6 @@ public sealed class ContractTests {
         var contractService = new ContractService(httpClient);
         var response = await contractService.GetContractAsync(contractID);
         Assert.IsNotNull(response);
-        
     }
     
     [TestMethod]
