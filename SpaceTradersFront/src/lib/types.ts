@@ -21,14 +21,14 @@ export interface Orbital {
 
 export interface Market {
     symbol:       string;
-    exports:      Exchange[];
-    imports:      Exchange[];
-    exchange:     Exchange[];
+    exports:      ExchangeItem[];
+    imports:      ExchangeItem[];
+    exchange:     ExchangeItem[];
     transactions: Transaction[];
     tradeGoods:   TradeGood[];
 }
 
-export interface Exchange {
+export interface ExchangeItem {
     symbol:      string;
     name:        string;
     description: string;
