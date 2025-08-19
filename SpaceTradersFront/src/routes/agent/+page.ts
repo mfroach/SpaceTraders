@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
-
-export const load: PageLoad = (async ({fetch}) => {
-        const response = await fetch("http://localhost:5247/my/agent", {method: 'GET'});
-        const result = await response.json();
+import * as getAgent from '$lib/GetAgent';
+export const load: PageLoad = (async () => {
+        const result = await getAgent.getAgent();
         return { result };
 }) satisfies PageLoad;
