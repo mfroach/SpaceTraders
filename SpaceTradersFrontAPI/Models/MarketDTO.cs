@@ -6,8 +6,8 @@ public class MarketDTO
     public Exports[] exports { get; set; }
     public Imports[] imports { get; set; }
     public Exchange[] exchange { get; set; }
-    public Transactions[] transactions { get; set; }
-    public TradeGoods[] tradeGoods { get; set; }
+//    public Transactions[] transactions { get; set; }
+//    public TradeGoods[] tradeGoods { get; set; }
 }
 
 public class Exports
