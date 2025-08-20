@@ -1,1 +1,6 @@
-SpaceTradersFront/package-lock.json
+SpaceTradersFrontAPI/obj/
+SpaceTradersFrontAPI/bin/
+SpaceTradersLib/obj/
+SpaceTradersLib/bin/
+SpaceTradersLibTest/bin/
+SpaceTradersLibTest/obj/
