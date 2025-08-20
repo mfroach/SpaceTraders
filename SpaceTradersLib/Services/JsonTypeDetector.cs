@@ -3,15 +3,15 @@ using Json.Schema;
 using SpaceTradersLib.Models;
 
 namespace SpaceTradersLib.Services;
-
+/*
 public class JsonTypeDetector {
     private readonly Dictionary<Type, JsonSchema> _schemas = new() {
         {
             typeof(Contract),
-            JsonSchema.FromFile("C:/Users/MichaelRoach/RiderProjects/SpaceTraders/SpaceTradersLib/Schemas/Contract.json")
+            JsonSchema.FromFile("../Schemas/Contract.json")
         }, {
             typeof(Agent),
-            JsonSchema.FromFile("C:/Users/MichaelRoach/RiderProjects/SpaceTraders/SpaceTradersLib/Schemas/Agent.json")
+            JsonSchema.FromFile("../Schemas/Agent.json")
         }
     };
     
@@ -26,3 +26,4 @@ public class JsonTypeDetector {
         }  return null;
     }
 }
+*/

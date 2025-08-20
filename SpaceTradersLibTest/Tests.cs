@@ -1,6 +1,4 @@
-﻿using Json.More;
-using SpaceTradersLib.Http;
-using SpaceTradersLib.Services;
+﻿using SpaceTradersLib.Http;
 
 namespace SpaceTradersLibTest;
 

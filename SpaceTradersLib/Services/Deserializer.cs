@@ -18,7 +18,7 @@ public class Deserializer {
         }
     }
 
-    private readonly JsonTypeDetector _detector = new JsonTypeDetector();
+   /* private readonly JsonTypeDetector _detector = new JsonTypeDetector();
 
     public object? Parse(string jsonResponse) {
         var targetType = _detector.GetTypeForJson(jsonResponse);
@@ -29,7 +29,7 @@ public class Deserializer {
         Console.WriteLine("Could not determine the type for the JSON response.");
         return null;
     }
-
+*/
     public Task<Agent?> DeserializeAgent(Stream jsonStream) =>
         DeserializeInternal<AgentResponseWrapper, Agent?>(jsonStream, r => r.Data);
 
