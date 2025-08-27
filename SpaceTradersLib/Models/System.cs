@@ -1,5 +1,9 @@
 using System.Text.Json.Serialization;
 using SpaceTradersLib.Services;
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace SpaceTradersLib.Models;
 
 internal record SystemResponseWrapper([property: JsonPropertyName("data")] SystemDetails Data);

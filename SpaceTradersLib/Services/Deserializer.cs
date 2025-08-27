@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Json.More;
 using SpaceTradersLib.Models;
 
 namespace SpaceTradersLib.Services;
@@ -33,6 +34,9 @@ public class Deserializer {
     public Task<Agent?> DeserializeAgent(Stream jsonStream) =>
         DeserializeInternal<AgentResponseWrapper, Agent?>(jsonStream, r => r.Data);
 
+    public AgentRegistered DeserializeRegisterAgent(HttpResponseMessage responseMessage) =>
+        JsonSerializer.Deserialize<AgentRegistered>(responseMessage.ToString());// todo wtf am I doing.
+
     public Task<Waypoint[]?> DeserializeWaypointList(Stream jsonStream) =>
         DeserializeInternal<WaypointListResponseWrapper, Waypoint[]?>(jsonStream, r => r.Data);
 
@@ -49,7 +53,7 @@ public class Deserializer {
         DeserializeInternal<ContractRoot, Contract>(jsonStream, r => r.data);
 
     public string? DeserializeContractAccept(HttpResponseMessage httpResponseMessage) =>
-        JsonSerializer.Deserialize<ContractAcceptData>(httpResponseMessage.ToString()).ToString();
+        JsonSerializer.Deserialize<ContractAcceptData>(httpResponseMessage.ToString()).ToString(); // todo wtf am I doing.
 
     public Task<Ship[]?> DeserializeShipList(Stream jsonStream) =>
         DeserializeInternal<ShipListResponseWrapper, Ship[]>(jsonStream, r => r.Data);

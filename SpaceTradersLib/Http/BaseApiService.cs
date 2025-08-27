@@ -37,23 +37,7 @@ public abstract class BaseApiService {
     }
 
     internal HttpContent RequestBuilder<TData>(TData content) {
-        if (content is NavData) {
-            Console.WriteLine("NavData");
-        }
-
         var json = JsonSerializer.Serialize<TData>(content);
         return new StringContent(json, Encoding.UTF8, "application/json");
-    }
-
-    private static string? GetToken() {
-        try {
-            using StreamReader reader = new("token.txt");
-            string token = reader.ReadToEnd();
-            return token;
-        }
-        catch (IOException ex) {
-            Console.WriteLine($"File could not be read: {ex.Message}");
-            return null;
-        }
     }
 }

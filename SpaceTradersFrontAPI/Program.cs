@@ -23,6 +23,9 @@ public class Program {
         app.MapGroup("/my").MapMyAPI();
         app.MapGroup("/ships").MapShipsAPI();
         app.MapGroup("/systems").MapLocationAPI();
+        app.MapPost("/register", (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) => {
+            return accountService.RegisterAgent(symbol, faction, accountToken); // todo cache in frontend
+        });
 
         app.Run();
     }

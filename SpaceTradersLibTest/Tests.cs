@@ -164,3 +164,20 @@ public sealed class AgentTests {
     */
     }
 }
+
+[TestClass]
+public sealed class AccountTests {
+    public TestContext TestContext { get; set; }
+
+    [DataRow("BOUNDLESS_BEER", "ETHEREAL")]
+    [TestMethod]
+    public async Task TestRegisterAgent(string symbol, string faction) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        string accountToken = await File.ReadAllTextAsync("accountToken.txt");
+        var accountService = new AccountService(httpClient);
+        var token = await accountService.RegisterAgent(symbol, faction, accountToken);
+        Assert.IsNotNull(token);
+        TestContext.WriteLine(token);
+    }
+}

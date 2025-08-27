@@ -1,11 +1,13 @@
 using System.Text.Json.Serialization;
-using SpaceTradersLib.Models;
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace SpaceTradersLib.Models;
 
 // Serialization records
 
-public record NavData(string waypointSymbol);
+public record NavData(string WaypointSymbol);
 
 // Deserialization records
 
@@ -132,7 +134,7 @@ public record Engine(
     int Quality
 );
 
-public record ShipModule(
+public record Module(
     [property: JsonPropertyName("symbol")] string Symbol,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("description")]
@@ -143,7 +145,7 @@ public record ShipModule(
     int? Capacity // optional
 );
 
-public record ShipMount(
+public record Mount(
     [property: JsonPropertyName("symbol")] string Symbol,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("description")]
@@ -161,7 +163,14 @@ public record Cargo(
     int Capacity,
     [property: JsonPropertyName("units")] int Units,
     [property: JsonPropertyName("inventory")]
-    object[] Inventory
+    Inventory[] Inventory
+);
+
+public record Inventory(
+    string symbol,
+    string name,
+    string description,
+    int units
 );
 
 public record Consumed(
@@ -199,8 +208,8 @@ public record Ship(
     Reactor Reactor,
     [property: JsonPropertyName("engine")] Engine Engine,
     [property: JsonPropertyName("modules")]
-    ShipModule[] Modules,
-    [property: JsonPropertyName("mounts")] ShipMount[] Mounts,
+    Module[] Modules,
+    [property: JsonPropertyName("mounts")] Mount[] Mounts,
     [property: JsonPropertyName("cargo")] Cargo Cargo,
     [property: JsonPropertyName("fuel")] Fuel Fuel,
     [property: JsonPropertyName("cooldown")]

@@ -19,9 +19,5 @@
     <ItemGroup>
       <ProjectReference Include="..\SpaceTradersLib\SpaceTradersLib.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <None Include="bin\Debug\net9.0\token.txt" />
-    </ItemGroup>
-
+    
 </Project>
