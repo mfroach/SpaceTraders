@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using SpaceTradersLib.Models;
 using SpaceTradersLib.Services;
 
@@ -14,13 +15,13 @@ public class AccountService(HttpClient httpClient) : BaseApiService(httpClient) 
         var deserializer = new Deserializer();
         try {
             using var responseMessage =
-                await HttpClient.PostAsync(endpoint, payload);
+                await HttpClient.PostAsJsonAsync(endpoint, payload);
             if (responseMessage.IsSuccessStatusCode) {
                 Console.WriteLine(responseMessage);
-                return deserializer.DeserializeRegisterAgent(responseMessage).token; // todo succeeds in registering, fails in deserialize
+                return deserializer.DeserializeRegisterAgent(responseMessage).token;
             } else {
-                //return deserializer.DeserializeError(responseMessage).error.ToString(); doesn't work and doesn't throw stack trace?
-                throw new NotImplementedException("Problem posting or deseralizing. Can't deserialize error. sorry");
+                Console.WriteLine(responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase);
+                return null;
             }
         }
         catch (HttpRequestException ex) {

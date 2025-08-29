@@ -70,6 +70,6 @@ public class Deserializer {
     public Task<Account?> DeserializeAccount(Stream jsonStream) =>
         DeserializeInternal<AccountResponseWrapper, Account>(jsonStream, r => r.Data.AccountDetails);
 
-    public ErrorRoot? DeserializeError(HttpResponseMessage httpResponseMessage) =>
-        JsonSerializer.Deserialize<ErrorRoot>(httpResponseMessage.ToString());
+    public ErrorRoot? DeserializeError(HttpResponseMessage httpResponseMessage) => // todo I don't think we need to deserialize error
+        JsonSerializer.Deserialize<ErrorRoot>(httpResponseMessage.ToString()); // httpResponseMessage already has accessible properties
 }

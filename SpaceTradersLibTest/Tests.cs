@@ -62,7 +62,7 @@ public sealed class ShipTests {
     }
     
     [TestMethod]
-    [DataRow("BOUNDLESS_BEER-2", "X1-DS2-A1")]
+    [DataRow("BOUNDLESS_BEER-2", "X1-US48-H56")]
     public async Task TestNavigateShip(string shipSymbol, string navWaypoint) {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
@@ -169,7 +169,7 @@ public sealed class AgentTests {
 public sealed class AccountTests {
     public TestContext TestContext { get; set; }
 
-    [DataRow("BOUNDLESS_BEER", "ETHEREAL")]
+    [DataRow("BOUNDLESS_BEER2", "ETHEREAL")]
     [TestMethod]
     public async Task TestRegisterAgent(string symbol, string faction) {
         var httpClient = new HttpClient();

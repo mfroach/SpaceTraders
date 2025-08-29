@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using SpaceTradersLib.Models;
@@ -37,6 +38,7 @@ public abstract class BaseApiService {
     }
 
     internal HttpContent RequestBuilder<TData>(TData content) {
+        // todo this is returning malformed data, pretty sure
         var json = JsonSerializer.Serialize<TData>(content);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }

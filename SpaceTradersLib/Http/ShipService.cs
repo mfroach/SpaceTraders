@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using SpaceTradersLib.Models;
 using SpaceTradersLib.Services;
 
@@ -37,13 +38,12 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         var navPayload = RequestBuilder(navData);
         try {
             using var responseMessage =
-                await HttpClient.PostAsync(endpoint, navPayload);
+                await HttpClient.PostAsJsonAsync(endpoint, navPayload);
             if (responseMessage.IsSuccessStatusCode) {
                 Console.WriteLine(responseMessage);
                 return await responseMessage.Content.ReadAsStringAsync(); // todo deserialize and create DTO
             } else {
-                //return deserializer.DeserializeError(responseMessage).error.ToString(); doesn't work and doesn't throw stack trace?
-                throw new NotImplementedException("Can't deserialize error. sorry");
+                return responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase;
             }
         }
         catch (HttpRequestException ex) {
@@ -51,7 +51,26 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
             return null;
         }
     }
-    
+
+    public async Task<ShipScanList?> ScanShipsAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/scan/ships");
+        ShipSymbolData shipSymbolData = new ShipSymbolData(shipSymbol);
+        try {
+            using var responseMessage =
+                await HttpClient.PostAsJsonAsync(endpoint, shipSymbolData);
+            if (responseMessage.IsSuccessStatusCode) {
+                Console.WriteLine(responseMessage);
+                return deserializer.DeserializeShipScanList(responseMessage.Content);
+            } else {
+                return responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase;
+            }
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to scan from {shipSymbol} failed: {ex.Message}");
+            return null;
+        }
+    }
+
     public async Task<string?> WarpShipAsync(string shipSymbol, string navWaypoint) {
         Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/warp");
         NavData navData = new NavData(navWaypoint);
