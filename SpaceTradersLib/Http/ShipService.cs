@@ -52,7 +52,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         }
     }
 
-    public async Task<ShipScanList?> ScanShipsAsync(string shipSymbol) {
+/*    public async Task<ShipScanList?> ScanShipsAsync(string shipSymbol) {
         Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/scan/ships");
         ShipSymbolData shipSymbolData = new ShipSymbolData(shipSymbol);
         try {
@@ -70,7 +70,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
             return null;
         }
     }
-
+*/
     public async Task<string?> WarpShipAsync(string shipSymbol, string navWaypoint) {
         Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/warp");
         NavData navData = new NavData(navWaypoint);

@@ -100,10 +100,10 @@ public sealed class LocationTests {
         var locationService = new LocationService(httpClient);
         var response = await locationService.GetMarketAsync(waypointSymbol);
         Assert.IsNotNull(response);
-        TestContext.WriteLine(response.symbol);
-        foreach (var x in response.imports) {
-            TestContext.WriteLine(x.symbol);
-            TestContext.WriteLine(x.description);
+        TestContext.WriteLine(response.Symbol);
+        foreach (var x in response.Imports) {
+            TestContext.WriteLine(x.Symbol);
+            TestContext.WriteLine(x.Description);
             TestContext.WriteLine("---");
         }
     }

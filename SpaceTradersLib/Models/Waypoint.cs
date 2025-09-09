@@ -56,50 +56,50 @@ public record MarketResponseWrapper(
 );
 
 public record Market(
-    string symbol,
-    Exports[] exports,
-    Imports[] imports,
-    Exchange[] exchange,
-    Transactions[] transactions,
-    TradeGoods[] tradeGoods
+    string Symbol,
+    Exports[] Exports,
+    Imports[] Imports,
+    Exchange[] Exchange,
+    Transactions[] Transactions,
+    TradeGoods[] TradeGoods
 );
 
 public record Exports(
-    string symbol,
-    string name,
-    string description
+    string Symbol,
+    string Name,
+    string Description
 );
 
 public record Imports(
-    string symbol,
-    string name,
-    string description
+    string Symbol,
+    string Name,
+    string Description
 );
 
 public record Exchange(
-    string symbol,
-    string name,
-    string description
+    string Symbol,
+    string Name,
+    string Description
 );
 
 public record Transactions(
-    string waypointSymbol,
-    string shipSymbol,
-    string tradeSymbol,
-    string type,
-    int units,
-    int pricePerUnit,
-    int totalPrice,
-    string timestamp
+    string WaypointSymbol,
+    string ShipSymbol,
+    string TradeSymbol,
+    string Type,
+    int Units,
+    int PricePerUnit,
+    int TotalPrice,
+    string Timestamp
 );
 
 public record TradeGoods(
-    string symbol,
-    string type,
-    int tradeVolume,
-    string supply,
-    string activity,
-    int purchasePrice,
-    int sellPrice
+    string Symbol,
+    string Type,
+    int TradeVolume,
+    string Supply,
+    string Activity,
+    int PurchasePrice,
+    int SellPrice
 );
 

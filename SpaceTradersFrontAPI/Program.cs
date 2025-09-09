@@ -1,17 +1,12 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SpaceTradersFrontAPI.Database;
-using SpaceTradersFrontAPI.Models;
+using SpaceTradersFrontAPI.Mapping;
 using SpaceTradersLib.Http;
-using SpaceTradersLib.Models;
 
 namespace SpaceTradersFrontAPI;
 
 public class Program {
     public static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
         builder.Services.ConfigureHttpClientDefaults(httpClientBuilder => {
             httpClientBuilder.ConfigureHttpClient(HttpClientConfigurator.ConfigureDefaultClient);
         });
@@ -23,24 +18,18 @@ public class Program {
         app.MapGroup("/my").MapMyAPI();
         app.MapGroup("/ships").MapShipsAPI();
         app.MapGroup("/systems").MapLocationAPI();
-        app.MapPost("/register", (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) => {
-            return accountService.RegisterAgent(symbol, faction, accountToken); // todo cache in frontend
-        });
-
+        app.MapPost("/register", (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) => 
+            accountService.RegisterAgent(symbol, faction, accountToken));
         app.Run();
     }
 }
 
 public static class RouteGroupExtensions {
     public static RouteGroupBuilder MapMyAPI(this RouteGroupBuilder group) {
-        group.MapGet("/agent", async ([FromServices] AgentService agentService, [FromServices] IMapper mapper) => {
-            var agent = await agentService
-                .GetAgentAsync();
-            if (agent is null) {
-                return Results.NoContent();
-            }
-
-            var dto = mapper.Map<AgentDTO>(agent);
+        group.MapGet("/agent", async ([FromServices] AgentService agentService) => {
+            var agent = await agentService.GetAgentAsync();
+            if (agent is null) { return Results.NoContent(); }
+            var dto = agent.ToDto();
             return Results.Ok(dto);
         });
         return group;
@@ -49,33 +38,35 @@ public static class RouteGroupExtensions {
     public static RouteGroupBuilder MapShipsAPI(this RouteGroupBuilder group) {
         // get ship info by symbol
         group.MapGet("/{shipSymbol}",
-            async (string shipSymbol, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
+            async (string shipSymbol, [FromServices] ShipService shipService) => {
                 var ship = await shipService.GetShipAsync(shipSymbol);
                 if (ship is null) {
                     return Results.NoContent();
                 }
-
-                var dto = mapper.Map<ShipDTO>(ship);
+                var dto = ship.ToDto();
                 return Results.Ok(dto);
             });
+
         group.MapGet("/{shipSymbol}/{oneShot}",
-            async (string shipSymbol, string oneShot, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
+            async (string shipSymbol, string oneShot, [FromServices] ShipService shipService) => {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, oneShot);
                 if (result is null) {
                     return Results.NoContent();
                 }
                 return Results.Ok(result);
             }); // known endpoints: orbit dock warp scrap repair siphon survey scan/systems scan/waypoints extract negotiate/contract chart
+
         group.MapGet("/{shipSymbol}/orbit",
-            async (string shipSymbol, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
+            async (string shipSymbol, [FromServices] ShipService shipService) => {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
                 if (result is null) {
                     return Results.NoContent();
                 }
                 return Results.Ok(result);
             });
+
         group.MapGet("/{shipSymbol}/navigate/{navWaypoint}",
-            async (string shipSymbol, string navWaypoint, [FromServices] ShipService shipService, [FromServices] IMapper mapper) => {
+            async (string shipSymbol, string navWaypoint, [FromServices] ShipService shipService) => {
                 var result = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
                 if (result is null) {
                     return Results.NoContent();
@@ -83,35 +74,37 @@ public static class RouteGroupExtensions {
 
                 return Results.Ok(result);
             });
+
         return group;
     }
     
     public static RouteGroupBuilder MapLocationAPI(this RouteGroupBuilder group) {
-        group.MapGet("/{systemSymbol}", async (string systemSymbol, [FromServices] LocationService locationService, [FromServices] IMapper mapper) => {
+        group.MapGet("/{systemSymbol}", async (string systemSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetSystemAsync(systemSymbol);
             if (result is null) {
                 return Results.NoContent();
             }
 
-            var dto = mapper.Map<SystemDTO>(result);
+            var dto = result.ToDto();
             return Results.Ok(dto);
         });
-        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService, [FromServices] IMapper mapper) => {
+
+        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetWaypointAsync(systemSymbol + "-" + waypointSymbol);
             if (result is null) {
                 return Results.NoContent();
             }
 
-            var dto = mapper.Map<WaypointDTO>(result);
+            var dto = result.ToDto();
             return Results.Ok(dto);
         });
-        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}/market", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService, [FromServices] IMapper mapper) => {
+        group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}/market", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetMarketAsync(systemSymbol + "-" + waypointSymbol);
             if (result is null) {
                 return Results.NoContent();
             }
 
-            var dto = mapper.Map<MarketDTO>(result);
+            var dto = result.ToDto();
             return Results.Ok(dto);
         });
         return group;
