@@ -6,16 +6,11 @@ using SpaceTradersLib.Services;
 
 namespace SpaceTradersLib.Http;
 
-public abstract class BaseApiService {
-    protected readonly HttpClient HttpClient;
-    protected readonly Deserializer Deserializer;
+public abstract class BaseApiService(HttpClient httpClient) {
+    protected readonly HttpClient HttpClient = httpClient;
+    protected readonly Deserializer Deserializer = new();
 
-    protected BaseApiService(HttpClient httpClient) {
-        HttpClient = httpClient;
-        Deserializer = new Deserializer();
-    }
-
-    protected async Task<Stream> Get(string endpoint) {
+    protected async Task<Stream?> Get(string endpoint) {
         var uri = new Uri($"https://api.spacetraders.io/v2/{endpoint}");
         try {
             return await HttpClient.GetStreamAsync(uri);
@@ -26,7 +21,7 @@ public abstract class BaseApiService {
         }
     }
 
-    protected async Task<HttpResponseMessage> Post(string endpoint, HttpContent payload) {
+    protected async Task<HttpResponseMessage?> Post(string endpoint, HttpContent payload) {
         try {
             var response = await HttpClient.PostAsync(new Uri($"https://api.spacetraders.io/v2/{endpoint}"), payload);
             return response;

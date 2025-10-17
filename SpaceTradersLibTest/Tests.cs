@@ -1,18 +1,24 @@
 ﻿using SpaceTradersLib.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SpaceTradersLibTest;
 
-[TestClass] // todo config file with parameters
+[TestClass]
 public sealed class ShipTests {
     public TestContext TestContext { get; set; }
 
+    [ClassInitialize]
+    public static void TestClassInitialize(TestContext context) { // todo not sure if this is ideal
+        context.Properties["TestShip"] = "BOUNDLESS_BEER-2";
+        context.Properties["TestLoc"] = "X1-DS2-A1";
+    }
+    
     [TestMethod]
-    [DataRow("BOUNDLESS_BEER-2")]
-    public async Task TestOrbitShip(string shipSymbol) {
+    public async Task TestOrbitShip() {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
+        var response = await shipService.ShipPostOneShotAsync(TestContext.Properties["TestShip"].ToString(), "orbit");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }

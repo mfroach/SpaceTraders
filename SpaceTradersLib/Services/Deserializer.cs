@@ -19,9 +19,9 @@ public class Deserializer {
         }
     }
 
-   /* private readonly JsonTypeDetector _detector = new JsonTypeDetector();
+   private readonly JsonTypeDetector _detector = new JsonTypeDetector();
 
-    public object? Parse(string jsonResponse) {
+    public object? Parse(Stream jsonResponse) {
         var targetType = _detector.GetTypeForJson(jsonResponse);
 
         if (targetType != null) {
@@ -30,7 +30,7 @@ public class Deserializer {
         Console.WriteLine("Could not determine the type for the JSON response.");
         return null;
     }
-*/
+
     public Task<Agent?> DeserializeAgent(Stream jsonStream) =>
         DeserializeInternal<AgentResponseWrapper, Agent?>(jsonStream, r => r.Data);
 
@@ -50,8 +50,9 @@ public class Deserializer {
         DeserializeInternal<ContractListRoot, Contract[]>(jsonStream, r => r.data);
 
     public Task<Contract?> DeserializeContract(Stream jsonStream) =>
-        DeserializeInternal<ContractRoot, Contract>(jsonStream, r => r.data);
-
+        //DeserializeInternal<ContractRoot, Contract>(jsonStream, r => r.data);
+        Parse(jsonStream)
+    
     public string? DeserializeContractAccept(HttpResponseMessage httpResponseMessage) =>
         JsonSerializer.Deserialize<ContractAcceptData>(httpResponseMessage.ToString()).ToString(); // todo wtf am I doing.
 
