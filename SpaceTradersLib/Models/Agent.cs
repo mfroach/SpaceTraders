@@ -32,6 +32,7 @@ public record AgentRegistered(
 );
 
 public record RegisterAgentData(
+    string faction,
     string symbol,
-    string faction
+    string email
     );

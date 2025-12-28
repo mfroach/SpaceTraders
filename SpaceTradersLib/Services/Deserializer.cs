@@ -1,17 +1,20 @@
 ﻿using System.Text.Json;
-using Json.More;
 using SpaceTradersLib.Models;
 
 namespace SpaceTradersLib.Services;
 
 public class Deserializer {
-    private async Task<TData?> DeserializeInternal<TWrapper, TData>(
-        Stream jsonStream,
-        Func<TWrapper, TData> dataSelector) {
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    private readonly JsonSerializerOptions _options = 
+        new() { PropertyNameCaseInsensitive = true };
+
+    private async Task<TData?> DeserializeAsync<TData>(Stream jsonStream) {
         try {
-            var wrapper = await JsonSerializer.DeserializeAsync<TWrapper>(jsonStream, options);
-            return wrapper is not null ? dataSelector(wrapper) : default;
+            var document = await JsonDocument.ParseAsync(jsonStream);
+            var dataElement = document.RootElement.GetProperty("data");
+            return JsonSerializer.Deserialize<TData>(
+                dataElement.GetRawText(), 
+                _options
+            );
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing data: {ex.Message}");
@@ -19,58 +22,39 @@ public class Deserializer {
         }
     }
 
-   private readonly JsonTypeDetector _detector = new JsonTypeDetector();
+    public Task<Agent?> DeserializeAgent(Stream jsonStream) => 
+        DeserializeAsync<Agent>(jsonStream);
 
-    public object? Parse(Stream jsonResponse) {
-        var targetType = _detector.GetTypeForJson(jsonResponse);
+    public Task<AgentRegistered?> DeserializeRegisterAgent(Stream jsonStream) =>
+        DeserializeAsync<AgentRegistered>(jsonStream);
 
-        if (targetType != null) {
-            return JsonSerializer.Deserialize(jsonResponse, targetType);
-        }
-        Console.WriteLine("Could not determine the type for the JSON response.");
-        return null;
-    }
+    public Task<Waypoint?> DeserializeWaypoint(Stream jsonStream) => 
+        DeserializeAsync<Waypoint>(jsonStream);
 
-    public Task<Agent?> DeserializeAgent(Stream jsonStream) =>
-        DeserializeInternal<AgentResponseWrapper, Agent?>(jsonStream, r => r.Data);
+    public Task<Waypoint[]?> DeserializeWaypointList(Stream jsonStream) => 
+        DeserializeAsync<Waypoint[]>(jsonStream);
 
-    public AgentRegistered DeserializeRegisterAgent(HttpResponseMessage responseMessage) =>
-        JsonSerializer.Deserialize<AgentRegistered>(responseMessage.ToString());// todo wtf am I doing.
+    public Task<Market?> DeserializeMarket(Stream jsonStream) => 
+        DeserializeAsync<Market>(jsonStream);
 
-    public Task<Waypoint[]?> DeserializeWaypointList(Stream jsonStream) =>
-        DeserializeInternal<WaypointListResponseWrapper, Waypoint[]?>(jsonStream, r => r.Data);
+    public Task<Contract?> DeserializeContract(Stream jsonStream) => 
+        DeserializeAsync<Contract>(jsonStream);
 
-    public Task<Waypoint?> DeserializeWaypoint(Stream jsonStream) =>
-        DeserializeInternal<WaypointResponseWrapper, Waypoint?>(jsonStream, r => r.Data);
-    
-    public Task<Market?> DeserializeMarket(Stream jsonStream) =>
-        DeserializeInternal<MarketResponseWrapper, Market?>(jsonStream, r => r.data);
+    public Task<Contract[]?> DeserializeContractList(Stream jsonStream) => 
+        DeserializeAsync<Contract[]>(jsonStream);
 
-    public Task<Contract[]?> DeserializeContractList(Stream jsonStream) =>
-        DeserializeInternal<ContractListRoot, Contract[]>(jsonStream, r => r.data);
+    public Task<Ship?> DeserializeShip(Stream jsonStream) => 
+        DeserializeAsync<Ship>(jsonStream);
 
-    public Task<Contract?> DeserializeContract(Stream jsonStream) =>
-        //DeserializeInternal<ContractRoot, Contract>(jsonStream, r => r.data);
-        Parse(jsonStream)
-    
-    public string? DeserializeContractAccept(HttpResponseMessage httpResponseMessage) =>
-        JsonSerializer.Deserialize<ContractAcceptData>(httpResponseMessage.ToString()).ToString(); // todo wtf am I doing.
+    public Task<Ship[]?> DeserializeShipList(Stream jsonStream) => 
+        DeserializeAsync<Ship[]>(jsonStream);
 
-    public Task<Ship[]?> DeserializeShipList(Stream jsonStream) =>
-        DeserializeInternal<ShipListResponseWrapper, Ship[]>(jsonStream, r => r.Data);
+    public Task<SystemDetails?> DeserializeSystem(Stream jsonStream) => 
+        DeserializeAsync<SystemDetails>(jsonStream);
 
-    public Task<Ship?> DeserializeShip(Stream jsonStream) =>
-        DeserializeInternal<ShipResponseWrapper, Ship>(jsonStream, r => r.Data);
+    public Task<Account?> DeserializeAccount(Stream jsonStream) => 
+        DeserializeAsync<Account>(jsonStream);
 
-    public Task<Ship?> DeserializeShipStatus(HttpResponseMessage httpResponseMessage) =>
-        throw new NotImplementedException();
-
-    public Task<SystemDetails?> DeserializeSystem(Stream jsonStream) =>
-        DeserializeInternal<SystemResponseWrapper, SystemDetails>(jsonStream, r => r.Data);
-
-    public Task<Account?> DeserializeAccount(Stream jsonStream) =>
-        DeserializeInternal<AccountResponseWrapper, Account>(jsonStream, r => r.Data.AccountDetails);
-
-    public ErrorRoot? DeserializeError(HttpResponseMessage httpResponseMessage) => // todo I don't think we need to deserialize error
-        JsonSerializer.Deserialize<ErrorRoot>(httpResponseMessage.ToString()); // httpResponseMessage already has accessible properties
+    public Task<ContractAccept?> DeserializeContractAccept(Stream jsonStream) =>
+        DeserializeAsync<ContractAccept>(jsonStream);
 }

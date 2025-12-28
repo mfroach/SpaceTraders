@@ -10,10 +10,7 @@
         <!-- Omit the whole tag for auto-detection. -->
         <!-- [x86] or x64, ARM, ARM64, s390x  -->
         <!-- You can also change it from the Test menu; choose "Processor Architecture for AnyCPU Projects" -->
-        <TargetPlatform>x64</TargetPlatform>
-
-        <!-- Path to Test Adapters -->
-        <TestAdaptersPaths>%SystemDrive%\Temp\foo;%SystemDrive%\Temp\bar</TestAdaptersPaths>
+        <!-- <TargetPlatform>x64</TargetPlatform> -->
 
         <!-- TestCaseFilter expression -->
         <TestCaseFilter>(TestCategory != Integration) &amp; (TestCategory != UnfinishedFeature)</TestCaseFilter>
@@ -55,11 +52,6 @@
 
         </DataCollectors>
     </DataCollectionRunSettings>
-
-    <!-- Parameters used by tests at run time -->
-    <TestRunParameters>
-        <Parameter name="token" value="value"/>
-    </TestRunParameters>
 
     <!-- Configuration for loggers -->
     <LoggerRunSettings>

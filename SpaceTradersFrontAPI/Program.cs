@@ -7,6 +7,16 @@ namespace SpaceTradersFrontAPI;
 public class Program {
     public static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSvelteApp",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
         builder.Services.ConfigureHttpClientDefaults(httpClientBuilder => {
             httpClientBuilder.ConfigureHttpClient(HttpClientConfigurator.ConfigureDefaultClient);
         });
@@ -20,6 +30,7 @@ public class Program {
         app.MapGroup("/systems").MapLocationAPI();
         app.MapPost("/register", (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) => 
             accountService.RegisterAgent(symbol, faction, accountToken));
+        app.UseCors("AllowSvelteApp");
         app.Run();
     }
 }

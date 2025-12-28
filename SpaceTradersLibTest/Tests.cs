@@ -1,16 +1,41 @@
 ﻿using SpaceTradersLib.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SpaceTradersLib.Models;
 
 namespace SpaceTradersLibTest;
 
 [TestClass]
+public static class TestGlobals
+{
+    public static string TestShip { get; private set; }
+    public static string TestLoc { get; private set; }
+
+    [AssemblyInitialize]
+    public static async Task AssemblyInitialize(TestContext context)
+    {
+        TestShip = "BOUNDLESS_BEER-2";
+        
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var shipService = new ShipService(httpClient);
+        var response = await shipService.GetShipAsync(TestShip);
+
+        TestLoc = response?.Nav.WaypointSymbol;
+    }
+}
+
+[TestClass]
 public sealed class ShipTests {
     public TestContext TestContext { get; set; }
-
-    [ClassInitialize]
-    public static void TestClassInitialize(TestContext context) { // todo not sure if this is ideal
-        context.Properties["TestShip"] = "BOUNDLESS_BEER-2";
-        context.Properties["TestLoc"] = "X1-DS2-A1";
+    
+    private static async Task<string> GetShipLoc(string shipSymbol)
+    {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var shipService = new ShipService(httpClient);
+        var response = await shipService.GetShipAsync(shipSymbol);
+        Assert.IsNotNull(response);
+        return response.Nav.WaypointSymbol;
     }
     
     [TestMethod]
@@ -18,7 +43,8 @@ public sealed class ShipTests {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
-        var response = await shipService.ShipPostOneShotAsync(TestContext.Properties["TestShip"].ToString(), "orbit");
+        // Access global value
+        var response = await shipService.ShipPostOneShotAsync(TestGlobals.TestShip, "orbit");
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
@@ -66,7 +92,7 @@ public sealed class ShipTests {
         Assert.IsNotNull(response);
         TestContext.WriteLine(response);
     }
-    
+
     [TestMethod]
     [DataRow("BOUNDLESS_BEER-2", "X1-US48-H56")]
     public async Task TestNavigateShip(string shipSymbol, string navWaypoint) {
@@ -75,7 +101,9 @@ public sealed class ShipTests {
         var shipService = new ShipService(httpClient);
         var response = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
         Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        TestContext.WriteLine(response); 
+        // Access global value
+        await shipService.NavigateShipAsync(shipSymbol, TestGlobals.TestLoc);
     }
 }
 
@@ -99,12 +127,11 @@ public sealed class LocationTests {
     }
     
     [TestMethod]
-    [DataRow("X1-DS2-A1")]
-    public async Task TestGetMarket(string waypointSymbol) {
+    public async Task TestGetMarket() {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var locationService = new LocationService(httpClient);
-        var response = await locationService.GetMarketAsync(waypointSymbol);
+        var response = await locationService.GetMarketAsync(TestGlobals.TestLoc);
         Assert.IsNotNull(response);
         TestContext.WriteLine(response.Symbol);
         foreach (var x in response.Imports) {
@@ -120,13 +147,15 @@ public sealed class ContractTests {
     public TestContext TestContext { get; set; }
 
     [TestMethod]
-    [DataRow("123")]
+    [DataRow("cmjpwqmug1fxmri6vwbi0xyt1")]
     public async Task TestGetContract(string contractID) {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var contractService = new ContractService(httpClient);
         var response = await contractService.GetContractAsync(contractID);
         Assert.IsNotNull(response);
+        TestContext.WriteLine(response.id);
+        TestContext.WriteLine(response.terms.ToString());
     }
     
     [TestMethod]
@@ -151,23 +180,23 @@ public sealed class ContractTests {
         var contractService = new ContractService(httpClient);
         var response = await contractService.AcceptContractAsync(contractID);
         Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        TestContext.WriteLine(response.contract.ToString());
     }
 }
 
 [TestClass]
 public sealed class AgentTests {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public async Task TestGetAgent() { // todo probably just define a new GetAgent for testing this
-    /*    var httpClient = new HttpClient();
+        var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var agentService = new AgentService(httpClient);
         var response = await agentService.GetAgentAsync();
-        var deserializer = new Deserializer();
-        var data = deserializer.Parse(response);
         Assert.IsNotNull(response);
-        TestContext.WriteLine(data);
-    */
+        TestContext.WriteLine(response.Symbol);
+    
     }
 }
 
@@ -175,15 +204,15 @@ public sealed class AgentTests {
 public sealed class AccountTests {
     public TestContext TestContext { get; set; }
 
-    [DataRow("BOUNDLESS_BEER2", "ETHEREAL")]
+    [DataRow("BOUNDLESS_BEER", "ETHEREAL")]
     [TestMethod]
     public async Task TestRegisterAgent(string symbol, string faction) {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         string accountToken = await File.ReadAllTextAsync("accountToken.txt");
         var accountService = new AccountService(httpClient);
-        var token = await accountService.RegisterAgent(symbol, faction, accountToken);
-        Assert.IsNotNull(token);
-        TestContext.WriteLine(token);
+        var agent = await accountService.RegisterAgent(faction, symbol, accountToken);
+        Assert.IsNotNull(agent);
+        TestContext.WriteLine(agent.token);
     }
 }

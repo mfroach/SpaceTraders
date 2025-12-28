@@ -1,0 +1,73 @@
+(version 1)
+
+; System reads
+(allow sysctl-read)
+(allow file-read-metadata)
+
+; Read root and system paths
+(allow file-read*
+    (literal "/")
+    (subpath "/System")
+    (subpath "/usr")
+    (subpath "/bin")
+    (subpath "/sbin")
+    (subpath "/var")
+    (subpath "/private")
+    (subpath "/dev")
+    (subpath "/Library/Preferences"))
+
+; Paths
+(define project-path "/Users/mfro/src/SpaceTraders/SpaceTradersFront")
+(define home-path "/Users/mfro")
+
+; Project access
+(allow file-read* (subpath project-path))
+(allow file-write*
+    (subpath (string-append project-path "/node_modules"))
+    (subpath (string-append project-path "/.svelte-kit"))
+    (subpath (string-append project-path "/build"))
+    (subpath (string-append project-path "/dist")))
+
+; Node.js installation
+(allow file-read*
+    (subpath "/opt/homebrew"))
+
+; npm cache - allow writes for logs
+(allow file-read*
+    (subpath (string-append home-path "/.npm")))
+(allow file-write*
+    (subpath (string-append home-path "/.npm/_logs")))
+(allow file-write-unlink
+    (subpath (string-append home-path "/.npm/_logs")))
+
+; Temp access
+(allow file-write*
+    (regex "^/private/tmp/")
+    (regex "^/private/var/folders/"))
+
+; /dev device access for terminal I/O
+(allow file-write*
+    (literal "/dev/null")
+    (literal "/dev/tty")
+    (regex "^/dev/ttys[0-9]+$")
+    (literal "/dev/dtracehelper"))
+(allow file-ioctl
+    (regex "^/dev/ttys[0-9]+$")
+    (literal "/dev/tty"))
+
+; Process operations
+(allow process-fork)
+(allow process-exec
+    (subpath "/opt/homebrew")
+    (subpath (string-append project-path "/node_modules"))
+    (literal "/usr/bin/env")
+    (literal "/bin/sh")
+    (literal "/bin/bash"))
+
+; Network - LOCALHOST ONLY
+(allow network-outbound (remote ip "localhost:*"))
+(allow network-inbound (local ip "localhost:*"))
+
+; IPC and mach services
+(allow ipc-posix-shm*)
+(allow mach-lookup)
