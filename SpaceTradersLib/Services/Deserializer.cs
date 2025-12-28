@@ -22,6 +22,9 @@ public class Deserializer {
         }
     }
 
+    public Task<Error?> DeserializeError(Stream jsonStream) =>
+        DeserializeAsync<Error>(jsonStream);
+    
     public Task<Agent?> DeserializeAgent(Stream jsonStream) => 
         DeserializeAsync<Agent>(jsonStream);
 
@@ -48,6 +51,9 @@ public class Deserializer {
 
     public Task<Ship[]?> DeserializeShipList(Stream jsonStream) => 
         DeserializeAsync<Ship[]>(jsonStream);
+
+    public Task<ShipScanList?> DeserializeShipScanList(Stream jsonStream) =>
+        DeserializeAsync<ShipScanList>(jsonStream);
 
     public Task<SystemDetails?> DeserializeSystem(Stream jsonStream) => 
         DeserializeAsync<SystemDetails>(jsonStream);

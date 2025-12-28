@@ -215,3 +215,12 @@ public record Ship(
     [property: JsonPropertyName("cooldown")]
     Cooldown Cooldown
 );
+
+public record ShipScanList(
+    Cooldown Cooldown,
+    Ship[] Ships
+    );
+    
+    public record ShipSymbolData(
+        string Symbol
+        );
