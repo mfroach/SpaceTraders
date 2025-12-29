@@ -105,6 +105,17 @@ public sealed class ShipTests {
         // Access global value
         await shipService.NavigateShipAsync(shipSymbol, TestGlobals.TestLoc);
     }
+    
+    [TestMethod]
+    [DataRow("BOUNDLESS_BEER-1")]
+    public async Task TestScanShips(string shipSymbol) {
+        var httpClient = new HttpClient();
+        HttpClientConfigurator.ConfigureDefaultClient(httpClient);
+        var shipService = new ShipService(httpClient);
+        var response = await shipService.ScanShipsAsync(shipSymbol);
+        Assert.IsNotNull(response);
+        TestContext.WriteLine(response.ToString());
+    }
 }
 
 [TestClass]
