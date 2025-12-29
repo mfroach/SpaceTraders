@@ -39,7 +39,7 @@ public static class RouteGroupExtensions {
     public static RouteGroupBuilder MapMyAPI(this RouteGroupBuilder group) {
         group.MapGet("/agent", async ([FromServices] AgentService agentService) => {
             var agent = await agentService.GetAgentAsync();
-            if (agent is null) { return Results.NoContent(); }
+            if (agent is null) { return Results.InternalServerError("Response was bad. Token may be invalid."); }
             var dto = agent.ToDto();
             return Results.Ok(dto);
         });
@@ -52,7 +52,7 @@ public static class RouteGroupExtensions {
             async (string shipSymbol, [FromServices] ShipService shipService) => {
                 var ship = await shipService.GetShipAsync(shipSymbol);
                 if (ship is null) {
-                    return Results.NoContent();
+                    return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
                 var dto = ship.ToDto();
                 return Results.Ok(dto);
@@ -62,7 +62,7 @@ public static class RouteGroupExtensions {
             async (string shipSymbol, string oneShot, [FromServices] ShipService shipService) => {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, oneShot);
                 if (result is null) {
-                    return Results.NoContent();
+                    return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
                 return Results.Ok(result);
             }); // known endpoints: orbit dock warp scrap repair siphon survey scan/systems scan/waypoints extract negotiate/contract chart
@@ -71,7 +71,7 @@ public static class RouteGroupExtensions {
             async (string shipSymbol, [FromServices] ShipService shipService) => {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
                 if (result is null) {
-                    return Results.NoContent();
+                    return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
                 return Results.Ok(result);
             });
@@ -80,7 +80,7 @@ public static class RouteGroupExtensions {
             async (string shipSymbol, string navWaypoint, [FromServices] ShipService shipService) => {
                 var result = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
                 if (result is null) {
-                    return Results.NoContent();
+                    return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
 
                 return Results.Ok(result);
@@ -93,7 +93,7 @@ public static class RouteGroupExtensions {
         group.MapGet("/{systemSymbol}", async (string systemSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetSystemAsync(systemSymbol);
             if (result is null) {
-                return Results.NoContent();
+                return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
             var dto = result.ToDto();
@@ -103,7 +103,7 @@ public static class RouteGroupExtensions {
         group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetWaypointAsync(systemSymbol + "-" + waypointSymbol);
             if (result is null) {
-                return Results.NoContent();
+                return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
             var dto = result.ToDto();
@@ -112,7 +112,7 @@ public static class RouteGroupExtensions {
         group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}/market", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetMarketAsync(systemSymbol + "-" + waypointSymbol);
             if (result is null) {
-                return Results.NoContent();
+                return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
             var dto = result.ToDto();
