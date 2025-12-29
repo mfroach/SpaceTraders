@@ -10,14 +10,24 @@ public abstract class BaseApiService(HttpClient httpClient) {
     protected readonly HttpClient HttpClient = httpClient;
     protected readonly Deserializer Deserializer = new();
 
-    protected async Task<Stream?> Get(string endpoint) {
-        var uri = new Uri($"https://api.spacetraders.io/v2/{endpoint}");
+    protected async Task<Result<TSuccess>> GetAsync<TSuccess>(string endpoint) where TSuccess : class {
         try {
-            return await HttpClient.GetStreamAsync(uri);
+            using var response = await HttpClient.GetAsync($"https://api.spacetraders.io/v2/{endpoint}",
+                HttpCompletionOption.ResponseHeadersRead);
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            if (response.IsSuccessStatusCode) {
+                var data = await Deserializer.DeserializeAsync<TSuccess>(stream);
+                return Result<TSuccess>.Success(data);
+            }
+
+            var error = await Deserializer.DeserializeAsync<Error>(stream);
+            return Result<TSuccess>.Failure(error);
         }
         catch (HttpRequestException ex) {
-            Console.WriteLine($"HTTP GET request failed: {ex.Message}");
-            return null;
+            Console.WriteLine($"HTTP request failed: {ex.Message}");
+            return Result<TSuccess>.Failure(new Error { Message = ex.Message });
         }
     }
 

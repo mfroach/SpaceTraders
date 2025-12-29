@@ -7,7 +7,7 @@ public class Deserializer {
     private readonly JsonSerializerOptions _options = 
         new() { PropertyNameCaseInsensitive = true };
 
-    private async Task<TData?> DeserializeAsync<TData>(Stream jsonStream) {
+    public async Task<TData?> DeserializeAsync<TData>(Stream jsonStream) {
         try {
             var document = await JsonDocument.ParseAsync(jsonStream);
             var dataElement = document.RootElement.GetProperty("data");
