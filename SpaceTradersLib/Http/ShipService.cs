@@ -6,36 +6,14 @@ namespace SpaceTradersLib.Http;
 
 public class ShipService(HttpClient httpClient) : BaseApiService(httpClient)
 {
-    private Deserializer deserializer = new Deserializer();
-
-    public async Task<Ship[]?> GetShipListAsync()
+    public async Task<Result<Ship[]?>> GetShipListAsync()
     {
-        try
-        {
-            await using var jsonStream =
-                await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/my/ships");
-            return await deserializer.DeserializeShipList(jsonStream);
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP request to fetch ship data failed: {ex.Message}");
-            return null;
-        }
+        return await GetAsync<Ship[]>("my/ships");
     }
 
-    public async Task<Ship?> GetShipAsync(string shipSymbol)
+    public async Task<Result<Ship?>> GetShipAsync(string shipSymbol)
     {
-        try
-        {
-            await using var jsonStream =
-                await HttpClient.GetStreamAsync($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}");
-            return await deserializer.DeserializeShip(jsonStream);
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP request to fetch ship data failed: {ex.Message}");
-            return null;
-        }
+        return await GetAsync<Ship>($"my/ships/{shipSymbol}");
     }
 
     public async Task<string?> NavigateShipAsync(string shipSymbol, string navWaypoint)
@@ -51,8 +29,7 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient)
             {
                 Console.WriteLine(responseMessage);
                 return await responseMessage.Content.ReadAsStringAsync(); // todo deserialize and create DTO
-            }
-            else
+            } else
             {
                 return responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase;
             }
@@ -77,9 +54,8 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient)
             if (responseMessage.IsSuccessStatusCode)
             {
                 Console.WriteLine(responseMessage);
-                return await deserializer.DeserializeShipScanList(stream);
-            }
-            else
+                return await Deserializer.DeserializeShipScanList(stream);
+            } else
             {
                 Console.WriteLine(responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase);
                 //return await Deserializer.DeserializeError(stream); TODO implement Result pattern

@@ -21,12 +21,12 @@ public abstract class BaseApiService(HttpClient httpClient) {
                 return Result<TSuccess>.Success(data);
             }
 
-            var error = await Deserializer.DeserializeAsync<ApiError>(stream);
+            var error = await Deserializer.DeserializeApiErrorAsync(stream);
             return Result<TSuccess>.Failure(error);
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP request failed: {ex.Message}");
-            return null;
+            return Result<TSuccess>.Failure(new(123, ex.Message, 0, "0"));
         }
     }
 

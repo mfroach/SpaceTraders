@@ -10,14 +10,33 @@ public class Deserializer {
     public async Task<TData?> DeserializeAsync<TData>(Stream jsonStream) {
         try {
             var document = await JsonDocument.ParseAsync(jsonStream);
-            var dataElement = document.RootElement.GetProperty("data");
-            return JsonSerializer.Deserialize<TData>(
-                dataElement.GetRawText(), 
-                _options
-            );
+            if (document.RootElement.TryGetProperty("data", out var dataElement)) {
+                return JsonSerializer.Deserialize<TData>(
+                    dataElement.GetRawText(), 
+                    _options
+                );
+            }
+            return default;
         }
         catch (JsonException ex) {
             Console.WriteLine($"Error deserializing data: {ex.Message}");
+            return default;
+        }
+    }
+
+    public async Task<ApiError?> DeserializeApiErrorAsync(Stream jsonStream) {
+        try {
+            var document = await JsonDocument.ParseAsync(jsonStream);
+            if (document.RootElement.TryGetProperty("error", out var errorElement)) {
+                return JsonSerializer.Deserialize<ApiError>(
+                    errorElement.GetRawText(), 
+                    _options
+                );
+            }
+            return default;
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing api error: {ex.Message}");
             return default;
         }
     }

@@ -27,23 +27,7 @@ public class AccountService(HttpClient httpClient) : BaseApiService(httpClient) 
         } 
     }
 
-        public async Task<Account?> GetAccountAsync() {
-            try {
-                using var response = await HttpClient.GetAsync("https://api.spacetraders.io/v2/my/account", HttpCompletionOption.ResponseHeadersRead);
-                
-                if (response.IsSuccessStatusCode) {
-                    await using var jsonStream = await response.Content.ReadAsStreamAsync();
-                    return await Deserializer.DeserializeAsync<Account>(jsonStream);
-                }
-
-                await using var errorStream = await response.Content.ReadAsStreamAsync();
-                var error = await Deserializer.DeserializeAsync<ApiError>(errorStream);
-                Console.WriteLine($"API Error {response.StatusCode}: {error?.Message}");
-                return null;
-            }
-            catch (HttpRequestException ex) {
-            Console.WriteLine($"HTTP request to fetch account data failed: {ex.Message}");
-            return null;
-        }
+    public async Task<Result<Account?>> GetAccountAsync() {
+        return await GetAsync<Account>("my/account");
     }
 }

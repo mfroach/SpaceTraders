@@ -39,7 +39,7 @@ public static class RouteGroupExtensions {
     public static RouteGroupBuilder MapMyAPI(this RouteGroupBuilder group) {
         group.MapGet("/agent", async ([FromServices] AgentService agentService) => {
             var agent = await agentService.GetAgentAsync();
-            if (agent is null) { return Results.InternalServerError("Response was bad. Token may be invalid."); }
+            if (!agent.IsSuccess || agent.Data is null) { return Results.InternalServerError("Response was bad. Token may be invalid."); }
             var dto = agent.Data.ToDto();
             return Results.Ok(dto);
         });
@@ -51,10 +51,10 @@ public static class RouteGroupExtensions {
         group.MapGet("/{shipSymbol}",
             async (string shipSymbol, [FromServices] ShipService shipService) => {
                 var ship = await shipService.GetShipAsync(shipSymbol);
-                if (ship is null) {
+                if (!ship.IsSuccess || ship.Data is null) {
                     return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
-                var dto = ship.ToDto();
+                var dto = ship.Data.ToDto();
                 return Results.Ok(dto);
             });
 
@@ -92,30 +92,30 @@ public static class RouteGroupExtensions {
     public static RouteGroupBuilder MapLocationAPI(this RouteGroupBuilder group) {
         group.MapGet("/{systemSymbol}", async (string systemSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetSystemAsync(systemSymbol);
-            if (result is null) {
+            if (!result.IsSuccess || result.Data is null) {
                 return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
-            var dto = result.ToDto();
+            var dto = result.Data.ToDto();
             return Results.Ok(dto);
         });
 
         group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetWaypointAsync(systemSymbol + "-" + waypointSymbol);
-            if (result is null) {
+            if (!result.IsSuccess || result.Data is null) {
                 return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
-            var dto = result.ToDto();
+            var dto = result.Data.ToDto();
             return Results.Ok(dto);
         });
         group.MapGet("/{systemSymbol}/waypoints/{waypointSymbol}/market", async (string systemSymbol, string waypointSymbol, [FromServices] LocationService locationService) => {
             var result = await locationService.GetMarketAsync(systemSymbol + "-" + waypointSymbol);
-            if (result is null) {
+            if (!result.IsSuccess || result.Data is null) {
                 return Results.InternalServerError("Response was bad. Token may be invalid.");
             }
 
-            var dto = result.ToDto();
+            var dto = result.Data.ToDto();
             return Results.Ok(dto);
         });
         return group;

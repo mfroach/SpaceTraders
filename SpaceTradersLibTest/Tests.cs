@@ -20,7 +20,7 @@ public static class TestGlobals
         var shipService = new ShipService(httpClient);
         var response = await shipService.GetShipAsync(TestShip);
 
-        TestLoc = response?.Nav.WaypointSymbol;
+        TestLoc = response?.Data?.Nav.WaypointSymbol;
     }
 }
 
@@ -34,8 +34,8 @@ public sealed class ShipTests {
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.GetShipAsync(shipSymbol);
-        Assert.IsNotNull(response);
-        return response.Nav.WaypointSymbol;
+        Assert.IsNotNull(response.Data);
+        return response.Data.Nav.WaypointSymbol;
     }
     
     [TestMethod]
@@ -129,8 +129,8 @@ public sealed class LocationTests {
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var locationService = new LocationService(httpClient);
         var response = await locationService.GetWaypointListByTraitAsync(systemSymbol, trait);
-        Assert.IsNotNull(response);
-        foreach (var x in response) {
+        Assert.IsNotNull(response.Data);
+        foreach (var x in response.Data) {
             TestContext.WriteLine(x.Symbol);
             TestContext.WriteLine(x.Type);
             TestContext.WriteLine("---------");
@@ -143,9 +143,9 @@ public sealed class LocationTests {
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var locationService = new LocationService(httpClient);
         var response = await locationService.GetMarketAsync(TestGlobals.TestLoc);
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response.Symbol);
-        foreach (var x in response.Imports) {
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data.Symbol);
+        foreach (var x in response.Data.Imports) {
             TestContext.WriteLine(x.Symbol);
             TestContext.WriteLine(x.Description);
             TestContext.WriteLine("---");
@@ -164,9 +164,9 @@ public sealed class ContractTests {
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var contractService = new ContractService(httpClient);
         var response = await contractService.GetContractAsync(contractID);
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response.id);
-        TestContext.WriteLine(response.terms.ToString());
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data.id);
+        TestContext.WriteLine(response.Data.terms.ToString());
     }
     
     [TestMethod]
@@ -175,8 +175,8 @@ public sealed class ContractTests {
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var contractService = new ContractService(httpClient);
         var response = await contractService.GetContractListAsync();
-        Assert.IsNotNull(response);
-        foreach (var x in response) {
+        Assert.IsNotNull(response.Data);
+        foreach (var x in response.Data) {
             TestContext.WriteLine(x.id);
             TestContext.WriteLine(x.type);
             TestContext.WriteLine("--------");
@@ -200,12 +200,12 @@ public sealed class AgentTests {
     public TestContext TestContext { get; set; }
 
     [TestMethod]
-    public async Task TestGetAgent() { // todo probably just define a new GetAgent for testing this
+    public async Task TestGetAgent() {
         var httpClient = new HttpClient();
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var agentService = new AgentService(httpClient);
         var response = await agentService.GetAgentAsync();
-        Assert.IsNotNull(response);
+        Assert.IsNotNull(response.Data);
         TestContext.WriteLine(response.Data.Symbol);
     
     }
