@@ -40,7 +40,7 @@ public static class RouteGroupExtensions {
         group.MapGet("/agent", async ([FromServices] AgentService agentService) => {
             var agent = await agentService.GetAgentAsync();
             if (agent is null) { return Results.InternalServerError("Response was bad. Token may be invalid."); }
-            var dto = agent.ToDto();
+            var dto = agent.Data.ToDto();
             return Results.Ok(dto);
         });
         return group;

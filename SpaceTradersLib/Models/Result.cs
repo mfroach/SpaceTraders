@@ -1,6 +1,7 @@
 namespace SpaceTradersLib.Models;
 
-public class Result<T> where T : class {
+public class Result<T> where T : class?
+{
     public bool IsSuccess { get; }
     public T? Data { get; }
     public ApiError? Error { get; }

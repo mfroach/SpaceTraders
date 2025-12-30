@@ -38,7 +38,7 @@ public class AccountService(HttpClient httpClient) : BaseApiService(httpClient) 
 
                 await using var errorStream = await response.Content.ReadAsStreamAsync();
                 var error = await Deserializer.DeserializeAsync<ApiError>(errorStream);
-                Console.WriteLine($"API Error {response.StatusCode}: {error?.message}");
+                Console.WriteLine($"API Error {response.StatusCode}: {error?.Message}");
                 return null;
             }
             catch (HttpRequestException ex) {

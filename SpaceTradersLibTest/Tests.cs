@@ -206,7 +206,7 @@ public sealed class AgentTests {
         var agentService = new AgentService(httpClient);
         var response = await agentService.GetAgentAsync();
         Assert.IsNotNull(response);
-        TestContext.WriteLine(response.Symbol);
+        TestContext.WriteLine(response.Data.Symbol);
     
     }
 }

@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using SpaceTradersLib.Models;
 using SpaceTradersLib.Services;
 
 namespace SpaceTradersLib.Http;
@@ -8,7 +9,7 @@ public abstract class BaseApiService(HttpClient httpClient) {
     protected readonly HttpClient HttpClient = httpClient;
     protected readonly Deserializer Deserializer = new();
 
-    protected async Task<Result<TSuccess>> GetAsync<TSuccess>(string endpoint) where TSuccess : class {
+    protected async Task<Result<TSuccess?>> GetAsync<TSuccess>(string endpoint) where TSuccess : class {
         try {
             using var response = await HttpClient.GetAsync($"https://api.spacetraders.io/v2/{endpoint}",
                 HttpCompletionOption.ResponseHeadersRead);
@@ -20,12 +21,12 @@ public abstract class BaseApiService(HttpClient httpClient) {
                 return Result<TSuccess>.Success(data);
             }
 
-            var error = await Deserializer.DeserializeAsync<Error>(stream);
+            var error = await Deserializer.DeserializeAsync<ApiError>(stream);
             return Result<TSuccess>.Failure(error);
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP request failed: {ex.Message}");
-            return Result<TSuccess>.Failure(new Error { Message = ex.Message });
+            return null;
         }
     }
 
