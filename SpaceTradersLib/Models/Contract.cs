@@ -5,8 +5,11 @@
 namespace SpaceTradersLib.Models;
 
 public record ContractListRoot(Contract[] data);
+
 public record ContractRoot(Contract data);
+
 public record ContractAccept(Contract contract, Agent agent);
+
 public record Contract(
     string id,
     string factionSymbol,

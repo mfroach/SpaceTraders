@@ -1,5 +1,5 @@
 namespace SpaceTradersLib.Models;
 
-public class Error {
-    
+public class Error
+{
 }

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -6,6 +7,7 @@ using System.Text.Json.Serialization;
 namespace SpaceTradersLib.Models;
 
 internal record WaypointResponseWrapper([property: JsonPropertyName("data")] Waypoint Data);
+
 internal record WaypointListResponseWrapper([property: JsonPropertyName("data")] Waypoint[] Data);
 
 public record Waypoint(
@@ -102,4 +104,3 @@ public record TradeGoods(
     int PurchasePrice,
     int SellPrice
 );
-

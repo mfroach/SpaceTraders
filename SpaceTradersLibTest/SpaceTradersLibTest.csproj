@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-        <PackageReference Include="MSTest" Version="4.0.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="MSTest" Version="4.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SpaceTradersLib\SpaceTradersLib.csproj" />
+        <ProjectReference Include="..\SpaceTradersLib\SpaceTradersLib.csproj"/>
     </ItemGroup>
-    
+
 </Project>

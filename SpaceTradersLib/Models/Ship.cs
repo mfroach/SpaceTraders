@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -14,7 +15,7 @@ public record NavData(string WaypointSymbol);
 internal record ShipListResponseWrapper(
     [property: JsonPropertyName("data")] Ship[] Data,
     [property: JsonPropertyName("meta")] Meta Meta
-    );
+);
 
 internal record ShipStatusResponseWrapper(
     [property: JsonPropertyName("data")] Ship Data
@@ -219,8 +220,8 @@ public record Ship(
 public record ShipScanList(
     Cooldown Cooldown,
     Ship[] Ships
-    );
-    
-    public record ShipSymbolData(
-        string Symbol
-        );
+);
+
+public record ShipSymbolData(
+    string Symbol
+);

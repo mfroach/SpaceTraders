@@ -1,7 +1,9 @@
 namespace SpaceTradersLib.Models;
 
-public class ApiResult : IDisposable {
-    public ApiResult(bool isSuccess, Stream data) {
+public class ApiResult : IDisposable
+{
+    public ApiResult(bool isSuccess, Stream data)
+    {
         IsSuccess = isSuccess;
         Data = data;
     }
@@ -9,7 +11,8 @@ public class ApiResult : IDisposable {
     public bool IsSuccess { get; }
     public Stream Data { get; }
 
-    public void Dispose() {
+    public void Dispose()
+    {
         Data.Dispose();
     }
 }

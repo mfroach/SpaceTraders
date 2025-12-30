@@ -14,4 +14,3 @@ public record ApiError(
     object Data,
     string RequestId
 );
-

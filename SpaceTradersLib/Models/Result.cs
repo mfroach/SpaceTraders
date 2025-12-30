@@ -6,7 +6,8 @@ public class Result<T> where T : class?
     public T? Data { get; }
     public ApiError? Error { get; }
 
-    private Result(bool isSuccess, T? data, ApiError? error) {
+    private Result(bool isSuccess, T? data, ApiError? error)
+    {
         IsSuccess = isSuccess;
         Data = data;
         Error = error;

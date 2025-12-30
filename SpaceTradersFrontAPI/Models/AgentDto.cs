@@ -1,5 +1,6 @@
 namespace SpaceTradersFrontAPI.Models;
 
-public class AgentDto {
+public class AgentDto
+{
     public string Symbol { get; set; }
 }

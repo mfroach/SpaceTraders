@@ -7,8 +7,4 @@
         <LangVersion>14</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Schemas\" />
-    </ItemGroup>
-
 </Project>

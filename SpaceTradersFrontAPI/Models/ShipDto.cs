@@ -2,7 +2,8 @@ using SpaceTradersLib.Models;
 
 namespace SpaceTradersFrontAPI.Models;
 
-public class ShipDto {
+public class ShipDto
+{
     public string Symbol { get; set; }
     public Nav Nav { get; set; }
     public string Destination { get; set; }

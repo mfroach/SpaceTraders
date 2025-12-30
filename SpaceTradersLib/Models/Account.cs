@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json.Serialization;
+
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -18,5 +19,6 @@ internal record AccountDataPayload(
 public record Account(
     [property: JsonPropertyName("id")] string Id,
     [property: JsonPropertyName("email")] string Email,
-    [property: JsonPropertyName("createdAt")] DateTime CreatedAt
+    [property: JsonPropertyName("createdAt")]
+    DateTime CreatedAt
 );

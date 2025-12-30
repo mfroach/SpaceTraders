@@ -7,3 +7,4 @@ internal class TradeDb : DbContext {
         : base(options) {
     }
 }*/
+

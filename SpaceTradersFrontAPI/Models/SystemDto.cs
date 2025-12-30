@@ -1,7 +1,9 @@
 using SpaceTradersLib.Models;
+
 namespace SpaceTradersFrontAPI.Models;
 
-public class SystemDto {
+public class SystemDto
+{
     public string Symbol { get; set; }
     public string Name { get; set; }
     public string SectorSymbol { get; set; }

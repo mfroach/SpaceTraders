@@ -1,4 +1,5 @@
 using SpaceTradersLib.Models;
+
 namespace SpaceTradersFrontAPI.Models;
 
 public class MarketDto

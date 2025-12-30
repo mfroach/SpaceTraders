@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -6,8 +7,8 @@ using System.Text.Json.Serialization;
 namespace SpaceTradersLib.Models;
 
 internal record AgentResponseWrapper([property: JsonPropertyName("data")] Agent Data);
-internal record AgentRegisteredResponseWrapper([property: JsonPropertyName("data")] AgentRegistered Data);
 
+internal record AgentRegisteredResponseWrapper([property: JsonPropertyName("data")] AgentRegistered Data);
 
 public record Agent(
     [property: JsonPropertyName("accountId")]
@@ -35,4 +36,4 @@ public record RegisterAgentData(
     string faction,
     string symbol,
     string email
-    );
+);
