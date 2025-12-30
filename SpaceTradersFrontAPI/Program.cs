@@ -32,8 +32,11 @@ public class Program
         app.MapGroup("/ships").MapShipsAPI();
         app.MapGroup("/systems").MapLocationAPI();
         app.MapPost("/register",
-            (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) =>
-                accountService.RegisterAgent(symbol, faction, accountToken));
+            async (string symbol, string faction, string accountToken, [FromServices] AccountService accountService) =>
+            {
+                var result = await accountService.RegisterAgent(symbol, faction, accountToken);
+                return result.IsSuccess ? Results.Ok(result.Data) : Results.InternalServerError(result.Error);
+            });
         app.UseCors("AllowSvelteApp");
         app.Run();
     }
@@ -77,36 +80,36 @@ public static class RouteGroupExtensions
             async (string shipSymbol, string oneShot, [FromServices] ShipService shipService) =>
             {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, oneShot);
-                if (result is null)
+                if (!result.IsSuccess || result.Data is null)
                 {
                     return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
 
-                return Results.Ok(result);
+                return Results.Ok(result.Data);
             }); // known endpoints: orbit dock warp scrap repair siphon survey scan/systems scan/waypoints extract negotiate/contract chart
 
         group.MapGet("/{shipSymbol}/orbit",
             async (string shipSymbol, [FromServices] ShipService shipService) =>
             {
                 var result = await shipService.ShipPostOneShotAsync(shipSymbol, "orbit");
-                if (result is null)
+                if (!result.IsSuccess || result.Data is null)
                 {
                     return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
 
-                return Results.Ok(result);
+                return Results.Ok(result.Data);
             });
 
         group.MapGet("/{shipSymbol}/navigate/{navWaypoint}",
             async (string shipSymbol, string navWaypoint, [FromServices] ShipService shipService) =>
             {
                 var result = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
-                if (result is null)
+                if (!result.IsSuccess || result.Data is null)
                 {
                     return Results.InternalServerError("Response was bad. Token may be invalid.");
                 }
 
-                return Results.Ok(result);
+                return Results.Ok(result.Data);
             });
 
         return group;

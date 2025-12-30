@@ -1,6 +1,4 @@
-using System.Net.Http.Json;
 using SpaceTradersLib.Models;
-using SpaceTradersLib.Services;
 
 namespace SpaceTradersLib.Http;
 
@@ -16,92 +14,35 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient)
         return await GetAsync<Ship>($"my/ships/{shipSymbol}");
     }
 
-    public async Task<string?> NavigateShipAsync(string shipSymbol, string navWaypoint)
+    public async Task<Result<string?>> NavigateShipAsync(string shipSymbol, string navWaypoint)
     {
-        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/navigate");
+        var endpoint = $"my/ships/{shipSymbol}/navigate";
         NavData navData = new NavData(navWaypoint);
         var navPayload = RequestBuilder(navData);
-        try
-        {
-            using var responseMessage =
-                await HttpClient.PostAsJsonAsync(endpoint, navPayload);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                Console.WriteLine(responseMessage);
-                return await responseMessage.Content.ReadAsStringAsync(); // todo deserialize and create DTO
-            } else
-            {
-                return responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase;
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP post to navigate {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
+        return await PostAsync<string>(endpoint, navPayload);
     }
 
-    public async Task<ShipScanList?> ScanShipsAsync(string shipSymbol)
+    public async Task<Result<ShipScanList?>> ScanShipsAsync(string shipSymbol)
     {
-        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/scan/ships");
-        ShipSymbolData shipSymbolData = new ShipSymbolData(shipSymbol);
-        try
-        {
-            using var responseMessage =
-                await HttpClient.PostAsJsonAsync(endpoint, shipSymbolData);
-            await using var stream = await responseMessage.Content.ReadAsStreamAsync();
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                Console.WriteLine(responseMessage);
-                return await Deserializer.DeserializeShipScanList(stream);
-            } else
-            {
-                Console.WriteLine(responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase);
-                //return await Deserializer.DeserializeError(stream); TODO implement Result pattern
-                return null;
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP post to scan from {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
+        var endpoint = $"my/ships/{shipSymbol}/scan/ships";
+        ShipSymbolData shipSymbolData = new(shipSymbol);
+        var payload = RequestBuilder(shipSymbolData);
+        
+        return await PostAsync<ShipScanList>(endpoint, payload);
+        
     }
 
-    public async Task<string?> WarpShipAsync(string shipSymbol, string navWaypoint)
+    public async Task<Result<string?>> WarpShipAsync(string shipSymbol, string navWaypoint)
     {
-        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/warp");
+        var endpoint = $"my/ships/{shipSymbol}/warp";
         NavData navData = new NavData(navWaypoint);
         var navPayload = RequestBuilder(navData);
-        try
-        {
-            using var responseMessage =
-                await HttpClient.PostAsync(endpoint, navPayload);
-            Console.WriteLine(responseMessage);
-            return await responseMessage.Content.ReadAsStringAsync(); // should return same schema as NavigateShipAsync
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP post to navigate {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
+        return await PostAsync<string>(endpoint, navPayload);
     }
 
-    public async Task<string> ShipPostOneShotAsync(string shipSymbol, string endpoint)
+    public async Task<Result<string?>> ShipPostOneShotAsync(string shipSymbol, string endpoint)
     {
-        Uri path = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/{endpoint}");
-        try
-        {
-            using var responseMessage =
-                await HttpClient.PostAsync(path, null);
-            Console.WriteLine(responseMessage.StatusCode);
-            return await responseMessage.Content.ReadAsStringAsync();
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP post to {endpoint} {shipSymbol} failed: {ex.Message}");
-            return null;
-        }
+        var path = $"my/ships/{shipSymbol}/{endpoint}";
+        return await PostAsync<string>(path, null);
     }
 }

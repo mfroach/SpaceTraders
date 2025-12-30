@@ -1,6 +1,4 @@
 ﻿using SpaceTradersLib.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SpaceTradersLib.Models;
 
 namespace SpaceTradersLibTest;
 
@@ -47,8 +45,8 @@ public sealed class ShipTests
         var shipService = new ShipService(httpClient);
         // Access global value
         var response = await shipService.ShipPostOneShotAsync(TestGlobals.TestShip, "orbit");
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
     }
 
     [TestMethod]
@@ -59,8 +57,8 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipPostOneShotAsync(shipSymbol, "dock");
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
     }
 
     [TestMethod]
@@ -71,8 +69,8 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipPostOneShotAsync(shipSymbol, "chart");
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
     }
 
     [TestMethod]
@@ -83,8 +81,8 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipPostOneShotAsync(shipSymbol, "refuel");
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
     }
 
     [TestMethod]
@@ -95,8 +93,8 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ShipPostOneShotAsync(shipSymbol, "extract");
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
     }
 
     [TestMethod]
@@ -107,9 +105,8 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.NavigateShipAsync(shipSymbol, navWaypoint);
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response);
-        // Access global value
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data);
         await shipService.NavigateShipAsync(shipSymbol, TestGlobals.TestLoc);
     }
 
@@ -121,8 +118,11 @@ public sealed class ShipTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var shipService = new ShipService(httpClient);
         var response = await shipService.ScanShipsAsync(shipSymbol);
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response.ToString());
+        Assert.IsNotNull(response.Data, 
+            $"response.Data is null. Error: {response.Error?.Message ?? "No error details"}");
+        // TestContext.WriteLine fails due to weirdness with async, use Console.Writeline
+        Console.WriteLine(response.Data.Cooldown + "\n");
+        foreach (var ship in response.Data.Ships) { Console.WriteLine(ship); }
     }
 }
 
@@ -208,8 +208,8 @@ public sealed class ContractTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         var contractService = new ContractService(httpClient);
         var response = await contractService.AcceptContractAsync(contractID);
-        Assert.IsNotNull(response);
-        TestContext.WriteLine(response.contract.ToString());
+        Assert.IsNotNull(response.Data);
+        TestContext.WriteLine(response.Data.contract.ToString());
     }
 }
 
@@ -243,8 +243,8 @@ public sealed class AccountTests
         HttpClientConfigurator.ConfigureDefaultClient(httpClient);
         string accountToken = await File.ReadAllTextAsync("accountToken.txt");
         var accountService = new AccountService(httpClient);
-        var agent = await accountService.RegisterAgent(faction, symbol, accountToken);
-        Assert.IsNotNull(agent);
-        TestContext.WriteLine(agent.token);
+        var response = await accountService.RegisterAgent(faction, symbol, accountToken);
+        Assert.IsNotNull(response.Data);
+        Console.WriteLine(response.Data.token);
     }
 }

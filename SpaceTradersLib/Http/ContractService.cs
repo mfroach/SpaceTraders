@@ -14,24 +14,9 @@ public class ContractService(HttpClient httpClient) : BaseApiService(httpClient)
         return await GetAsync<Contract>($"my/contracts/{contractId}");
     }
 
-    public async Task<ContractAccept?> AcceptContractAsync(string contractId)
+    public async Task<Result<ContractAccept?>> AcceptContractAsync(string contractId)
     {
-        try
-        {
-            var response = await HttpClient.PostAsync(
-                $"https://api.spacetraders.io/v2/my/contracts/{contractId}/accept",
-                null
-            );
-            response.EnsureSuccessStatusCode();
-
-            await using var stream = await response.Content.ReadAsStreamAsync();
-            var result = await Deserializer.DeserializeContractAccept(stream);
-            return result;
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP request to accept contract failed: {ex.Message}");
-            return null;
-        }
+        var endpoint = $"my/contracts/{contractId}/accept";
+        return await PostAsync<ContractAccept>(endpoint, null);
     }
 }
