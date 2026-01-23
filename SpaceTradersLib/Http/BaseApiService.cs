@@ -59,20 +59,6 @@ public abstract class BaseApiService(HttpClient httpClient)
         }
     }
 
-    protected async Task<HttpResponseMessage?> Post(string endpoint, HttpContent payload)
-    {
-        try
-        {
-            var response = await HttpClient.PostAsync(new Uri($"https://api.spacetraders.io/v2/{endpoint}"), payload);
-            return response;
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP POST request failed: {ex.Message}");
-            return null;
-        }
-    }
-
     internal HttpContent RequestBuilder<TData>(TData content)
     {
         // todo this is returning malformed data in some cases, pretty sure
