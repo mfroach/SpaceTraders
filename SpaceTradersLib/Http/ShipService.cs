@@ -194,4 +194,101 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
             return null;
         }
     }
+
+    public async Task<string?> ChartWaypointAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/chart");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to chart waypoint failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> ScanShipsAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/scan/ships");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to scan ships failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> ScanSystemsAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/scan/systems");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to scan systems failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> ScanWaypointsAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/scan/waypoints");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to scan waypoints failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> RepairShipAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/repair");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to repair ship failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> ScrapShipAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/scrap");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to scrap ship failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> SiphonResourcesAsync(string shipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/siphon");
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, null);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to siphon resources failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> RefineResourcesAsync(string shipSymbol, string produce) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/refine");
+        var payload = RequestBuilder(new { produce });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to refine resources failed: {ex.Message}");
+            return null;
+        }
+    }
 }

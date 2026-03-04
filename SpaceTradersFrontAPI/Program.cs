@@ -139,6 +139,51 @@ public static class RouteGroupExtensions {
             return result is null ? Results.InternalServerError() : Results.Ok(result);
         });
 
+        group.MapPost("/{shipSymbol}/warp/{waypointSymbol}", async (string shipSymbol, string waypointSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.WarpShipAsync(shipSymbol, waypointSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/chart", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.ChartWaypointAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/scan/ships", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.ScanShipsAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/scan/systems", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.ScanSystemsAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/scan/waypoints", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.ScanWaypointsAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/repair", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.RepairShipAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/scrap", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.ScrapShipAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/siphon", async (string shipSymbol, [FromServices] ShipService shipService) => {
+            var result = await shipService.SiphonResourcesAsync(shipSymbol);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
+        group.MapPost("/{shipSymbol}/refine", async (string shipSymbol, string produce, [FromServices] ShipService shipService) => {
+            var result = await shipService.RefineResourcesAsync(shipSymbol, produce);
+            return result is null ? Results.InternalServerError() : Results.Ok(result);
+        });
+
         return group;
     }
 
