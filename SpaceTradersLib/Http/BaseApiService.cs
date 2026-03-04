@@ -33,8 +33,10 @@ public abstract class BaseApiService(HttpClient httpClient) {
     }
 
     internal HttpContent RequestBuilder<TData>(TData content) {
-        // todo this is returning malformed data, pretty sure
-        var json = JsonSerializer.Serialize<TData>(content);
+        var options = new JsonSerializerOptions {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        var json = JsonSerializer.Serialize<TData>(content, options);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
 }

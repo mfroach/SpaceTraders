@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text;
 using SpaceTradersLib.Models;
 using SpaceTradersLib.Services;
 
@@ -36,14 +37,16 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         NavData navData = new NavData(navWaypoint);
         var deserializer = new Deserializer();
         var navPayload = RequestBuilder(navData);
+        var payloadString = await navPayload.ReadAsStringAsync();
         try {
             using var responseMessage =
-                await HttpClient.PostAsJsonAsync(endpoint, navPayload);
+                await HttpClient.PostAsync(endpoint, new StringContent(payloadString, Encoding.UTF8, "application/json"));
             if (responseMessage.IsSuccessStatusCode) {
-                Console.WriteLine(responseMessage);
-                return await responseMessage.Content.ReadAsStringAsync(); // todo deserialize and create DTO
+                return await responseMessage.Content.ReadAsStringAsync();
             } else {
-                return responseMessage.StatusCode + " | " + responseMessage.ReasonPhrase;
+                var errorBody = await responseMessage.Content.ReadAsStringAsync();
+                Console.WriteLine($"Navigate failed: {responseMessage.StatusCode} - {errorBody}");
+                return errorBody;
             }
         }
         catch (HttpRequestException ex) {
@@ -97,6 +100,97 @@ public class ShipService(HttpClient httpClient) : BaseApiService(httpClient) {
         }
         catch (HttpRequestException ex) {
             Console.WriteLine($"HTTP post to {endpoint} {shipSymbol} failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> PurchaseCargoAsync(string shipSymbol, string tradeSymbol, int units) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/purchase");
+        var payload = RequestBuilder(new { symbol = tradeSymbol, units });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to purchase cargo failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> SellCargoAsync(string shipSymbol, string tradeSymbol, int units) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/sell");
+        var payload = RequestBuilder(new { symbol = tradeSymbol, units });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to sell cargo failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> JettisonCargoAsync(string shipSymbol, string tradeSymbol, int units) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/jettison");
+        var payload = RequestBuilder(new { symbol = tradeSymbol, units });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to jettison cargo failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> TransferCargoAsync(string shipSymbol, string tradeSymbol, int units, string targetShipSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/transfer");
+        var payload = RequestBuilder(new { tradeSymbol, units, shipSymbol = targetShipSymbol });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to transfer cargo failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> RefuelShipAsync(string shipSymbol, int? units = null) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/refuel");
+        var payload = units.HasValue ? RequestBuilder(new { units = units.Value }) : null;
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to refuel ship failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> PurchaseShipAsync(string shipType, string waypointSymbol) {
+        Uri endpoint = new Uri("https://api.spacetraders.io/v2/my/ships");
+        var payload = RequestBuilder(new { shipType, waypointSymbol });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to purchase ship failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> JumpShipAsync(string shipSymbol, string systemSymbol) {
+        Uri endpoint = new Uri($"https://api.spacetraders.io/v2/my/ships/{shipSymbol}/jump");
+        var payload = RequestBuilder(new { waypointSymbol = systemSymbol });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(endpoint, payload);
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP post to jump ship failed: {ex.Message}");
             return null;
         }
     }

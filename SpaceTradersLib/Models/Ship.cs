@@ -7,7 +7,9 @@ namespace SpaceTradersLib.Models;
 
 // Serialization records
 
-public record NavData(string WaypointSymbol);
+public record NavData(
+    [property: JsonPropertyName("waypointSymbol")] string WaypointSymbol
+);
 
 // Deserialization records
 

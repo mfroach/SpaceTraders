@@ -57,4 +57,14 @@ public class Deserializer {
 
     public Task<ContractAccept?> DeserializeContractAccept(Stream jsonStream) =>
         DeserializeAsync<ContractAccept>(jsonStream);
+
+    public async Task<TData?> DeserializeGenericAsync<TData>(Stream jsonStream) {
+        try {
+            return await JsonSerializer.DeserializeAsync<TData>(jsonStream, _options);
+        }
+        catch (JsonException ex) {
+            Console.WriteLine($"Error deserializing: {ex.Message}");
+            return default;
+        }
+    }
 }

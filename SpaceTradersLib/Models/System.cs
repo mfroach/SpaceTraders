@@ -8,6 +8,8 @@ namespace SpaceTradersLib.Models;
 
 internal record SystemResponseWrapper([property: JsonPropertyName("data")] SystemDetails Data);
 
+public record SystemListRoot(SystemDetails[] data, Meta meta);
+
 public record SystemWaypoint(
     [property: JsonPropertyName("symbol")] string Symbol,
     [property: JsonPropertyName("type")] string Type,

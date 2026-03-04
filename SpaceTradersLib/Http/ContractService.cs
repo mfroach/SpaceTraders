@@ -44,4 +44,35 @@ public class ContractService(HttpClient httpClient) : BaseApiService(httpClient)
             return null;
         }
     }
+
+    public async Task<Contract[]?> GetContractsAsync() => await GetContractListAsync();
+
+    public async Task<string?> DeliverContractAsync(string contractId, string shipSymbol, string tradeSymbol, int units) {
+        var payload = RequestBuilder(new { shipSymbol, tradeSymbol, units });
+        try {
+            using var responseMessage = await HttpClient.PostAsync(
+                $"https://api.spacetraders.io/v2/my/contracts/{contractId}/deliver",
+                payload
+            );
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to deliver contract failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<string?> FulfillContractAsync(string contractId) {
+        try {
+            using var responseMessage = await HttpClient.PostAsync(
+                $"https://api.spacetraders.io/v2/my/contracts/{contractId}/fulfill",
+                null
+            );
+            return await responseMessage.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex) {
+            Console.WriteLine($"HTTP request to fulfill contract failed: {ex.Message}");
+            return null;
+        }
+    }
 }

@@ -10,13 +10,17 @@ public static class ShipExtensions
         return new ShipDto
         {
             Symbol = ship.Symbol,
+            Registration = ship.Registration,
             Nav = ship.Nav,
-            Destination = ship.Nav.Route.Destination.SystemSymbol,
-            Origin = ship.Nav.Route.Origin.SystemSymbol,
-            Status = ship.Nav.Status,
-            Cargo = ship.Cargo.Inventory,
-            CurrentFuel = ship.Fuel.Current,
-            FuelCapacity = ship.Fuel.Capacity
+            Crew = ship.Crew,
+            Frame = ship.Frame,
+            Reactor = ship.Reactor,
+            Engine = ship.Engine,
+            Modules = ship.Modules,
+            Mounts = ship.Mounts,
+            Cargo = ship.Cargo,
+            Fuel = ship.Fuel,
+            Cooldown = ship.Cooldown
         };
     }
 }
